@@ -62,7 +62,7 @@ These rules are the foundation for **per-app QoS**, **slice isolation**, and **m
 ### ▶️ Launch GUI
 
 ```bash
-python ui_main.py
+python main.py
 ```
 
 ---
