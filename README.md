@@ -53,7 +53,6 @@ These rules are the foundation for **per-app QoS**, **slice isolation**, and **m
 | ✅ Encode to Hex      | Visually define new rules, output valid 3GPP-encoded hex                      |
 | ✅ PyQt GUI           | Drag-and-fill interface to construct rules with ease                          |
 | ✅ Spec-Compliant     | Fully aligned with 3GPP TS 24.526, 24.501, and 31.121                         |
-| ✅ Developer-Friendly | Modular codebase for CLI usage, scripting, and system integration             |
 
 ---
 
