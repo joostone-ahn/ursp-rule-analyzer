@@ -60,9 +60,9 @@ These rules are the foundation for **per-app QoS**, **slice isolation**, and **m
 
 ### ▶️ Launch GUI
 
-```bash
-python main.py
-```
+  ```bash
+  python main.py
+  ```
 
 ---
 
