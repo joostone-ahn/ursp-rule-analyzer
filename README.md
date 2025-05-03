@@ -57,23 +57,6 @@ These rules are the foundation for **per-app QoS**, **slice isolation**, and **m
 
 ---
 
-## 🧱 Tool Structure
-
-<pre>
-Network-Slicing-URSP-rules-Analyzer/
-│
-├── decoder.py         # Hex → structured rule parser
-├── encoder.py         # Structured rule → hex encoder
-├── ui_main.py         # PyQt GUI launcher
-├── ursp_parser.py     # Core logic (shared by decoder/encoder)
-│
-├── example_files/     # Sample rules and hex strings
-├── image/             # UI screenshots
-└── README.md
-</pre>
-
----
-
 ## 🚀 Getting Started
 
 ### ▶️ Launch GUI
@@ -81,10 +64,6 @@ Network-Slicing-URSP-rules-Analyzer/
 ```bash
 python ui_main.py
 ```
-
-1. Choose **"Open File"** or **"Clipboard"** to load hex input
-2. Select **SIM1** or **SIM2** (for EF\_URSP testing)
-3. Click **"Execute"** to view decoded results or generate encoded hex
 
 ---
 
