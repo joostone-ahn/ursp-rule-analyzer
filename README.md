@@ -19,8 +19,8 @@ This tool was developed to decode and encode **URSP rules** based on:
 
 It enables rapid interpretation of complex **UE Policy Containers** or **SIM-resident URSP rules**, helping testers, device makers, and protocol engineers to automate rule creation, validation, and testing.
 
-> ✅ Validated with both *pre-configured URSP (SIM EF\_URSP)* and *network-provisioned rules (NAS UE Policy Container)*
-> ✅ Supports end-to-end encoding + decoding in hex for AT command scripting, network slicing validation, and log inspection workflows
+✅ Validated with both *pre-configured URSP (SIM EF\_URSP)* and *network-provisioned rules (NAS UE Policy Container)*
+✅ Supports end-to-end encoding + decoding in hex for AT command scripting, network slicing validation, and log inspection workflows
 
 ---
 
