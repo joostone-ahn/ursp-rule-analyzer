@@ -1,11 +1,10 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout, QTabWidget, QPushButton, \
     QComboBox, QLineEdit, QFrame, QWidget, QSpinBox, QTextEdit, QToolTip, QTableWidget
-from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
 import pandas as pd
 import re
-import tabulate
 import encoder, decoder, spec, display, excel
 
 debug_mode = 0
@@ -17,7 +16,7 @@ font_bold = QFont()
 font_bold.setPointSize(9)
 font_bold.setBold(True)
 
-font_log = QFont("Consolas", 11)
+font_log = QFont("Courier New", 11)
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -748,5 +747,6 @@ The precedence value of route selection descriptor field is used to specify the 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
     widget = MyWidget()
     sys.exit(app.exec_())
