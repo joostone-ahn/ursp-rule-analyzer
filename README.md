@@ -2,7 +2,7 @@
 
 A Python-based GUI tool for **decoding and encoding URSP (UE Route Selection Policy)** rules used in 5G network slicing — built to assist engineers interpreting protocol logs or provisioning rules on real devices.
 
-> 🔧 Bridging Hex-Level Protocol Analysis with GUI-Based Rule Configuration
+> 🔧 **Bridging Hex-Level Protocol Analysis with GUI-Based Rule Configuration**:
 > In protocol engineering, one of the most persistent challenges is dealing with raw hex data found in logs or SIM files that standard tools can’t parse. This tool bridges that gap by translating **hex-encoded URSP rules** into human-readable structures — and vice versa — using a 3GPP-compliant GUI interface.
 
 ---
