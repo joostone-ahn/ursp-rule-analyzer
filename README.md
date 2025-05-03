@@ -1,49 +1,63 @@
-# 🧠 Network Slicing URSP Rules Analyzer
+# 🧾 Network Slicing URSP Rules Analyzer
 
 A Python-based GUI tool for **decoding and encoding URSP (UE Route Selection Policy)** rules used in 5G network slicing — built to assist engineers interpreting protocol logs or provisioning rules on real devices.
+
+> 🔧 Bridging Hex-Level Protocol Analysis with GUI-Based Rule Configuration
+> In protocol engineering, one of the most persistent challenges is dealing with raw hex data found in logs or SIM files that standard tools can’t parse. This tool bridges that gap by translating **hex-encoded URSP rules** into human-readable structures — and vice versa — using a 3GPP-compliant GUI interface.
 
 ---
 
 ## 📌 Overview
 
-In the field of protocol engineering, hex-only log areas and unparsed policy containers are a common challenge.  
-This tool was built to decode and encode **URSP rules** based on **3GPP TS 24.526** and **TS 24.501**, enabling fast interpretation of **UE Policy Containers** or **EF_URSP SIM files**.
+URSP rules are a foundational mechanism in **5G Standalone (SA)** networks to support **network slicing**, where specific apps or traffic types are dynamically routed to the most appropriate network slice.
 
-> ✅ Pre-validated with both *pre-configured URSP (SIM EF_URSP)* and *network-provisioned rules (NAS UE Policy Container)*  
-> ✅ Supports end-to-end encoding + decoding in hex for AT command scripting, analysis, and automation  
+This tool was developed to decode and encode **URSP rules** based on:
+
+* **3GPP TS 24.526** – URSP encoding in UE Policy Container (NAS)
+* **3GPP TS 24.501** – NAS message procedures
+* **3GPP TS 31.121** – SIM file structure (EF\_URSP)
+
+It enables rapid interpretation of complex **UE Policy Containers** or **SIM-resident URSP rules**, helping testers, device makers, and protocol engineers to automate rule creation, validation, and testing.
+
+> ✅ Validated with both *pre-configured URSP (SIM EF\_URSP)* and *network-provisioned rules (NAS UE Policy Container)*
+> ✅ Supports end-to-end encoding + decoding in hex for AT command scripting, network slicing validation, and log inspection workflows
 
 ---
 
 ## 🔍 What Are URSP Rules?
 
-**URSP (UE Route Selection Policy)** rules allow a UE to select a specific **PDU session or network slice** for a given app or traffic descriptor.
+**URSP (UE Route Selection Policy)** rules define how a UE selects a **PDU session or network slice** for a given application, flow, or service.
+They enable **application-level traffic steering**, a key differentiator in the 5G architecture.
 
-- 📁 **Pre-configured rules**: Stored on SIM (EF_URSP) or NV memory.  
-- 🌐 **Provisioned rules**: Delivered by the network PCF over NAS in the **UE Policy Container**.
+There are two provisioning models:
 
-Each rule may include:
-- `Application Identifier`
-- `Traffic Descriptor` (IP filters, port ranges, protocols)
-- `Route Selection Descriptor` (OSId, SSC Mode, DNN, S-NSSAI, etc.)
-- `Precedence`, `MatchAll`, and more
+* 📁 **Pre-configured**: Rules stored on SIM (EF\_URSP) or UE non-volatile memory.
+* 🌐 **Network Provisioned**: Rules generated on the **PCF** and delivered via NAS (UE Policy Container).
 
-These are foundational to **5G slicing**, **QoS isolation**, and **application-specific PDU sessions**.
+Each rule can include:
 
----
+* `Application Identifier`
+* `Traffic Descriptor` (e.g., IPv4/IPv6 prefixes, ports, protocols)
+* `Route Selection Descriptor` (e.g., OSId, SSC Mode, DNN, S-NSSAI)
+* `Precedence`, `Match-All flag`, and other control fields
 
-## 🛠 Features
-
-| Feature                | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| ✅ Decode from Hex      | Parse binary URSP rules (e.g. from NAS log or SIM file) into human-readable fields |
-| ✅ Encode to Hex        | Build a rule visually and encode it for writing to SIM or scripting         |
-| ✅ PyQt GUI             | Drag-and-fill interface for rule construction                              |
-| ✅ Spec-Compliant       | Based on 3GPP TS 24.526, 24.501, and 31.121                                 |
-| ✅ Developer-Friendly   | Modular Python scripts for integration or CLI usage                        |
+These rules are the foundation for **per-app QoS**, **slice isolation**, and **multi-PDU session steering** in 5G SA.
 
 ---
 
-## 🖥️ Tool Structure
+## 🛠 Key Features
+
+| Feature              | Description                                                                   |
+| -------------------- | ----------------------------------------------------------------------------- |
+| ✅ Decode from Hex    | Paste raw hex (e.g., from NAS log or EF\_URSP dump) and get structured output |
+| ✅ Encode to Hex      | Visually define new rules, output valid 3GPP-encoded hex                      |
+| ✅ PyQt GUI           | Drag-and-fill interface to construct rules with ease                          |
+| ✅ Spec-Compliant     | Fully aligned with 3GPP TS 24.526, 24.501, and 31.121                         |
+| ✅ Developer-Friendly | Modular codebase for CLI usage, scripting, and system integration             |
+
+---
+
+## 🧱 Tool Structure
 
 <pre>
 Network-Slicing-URSP-rules-Analyzer/
@@ -68,19 +82,31 @@ Network-Slicing-URSP-rules-Analyzer/
 python ui_main.py
 ```
 
+1. Choose **"Open File"** or **"Clipboard"** to load hex input
+2. Select **SIM1** or **SIM2** (for EF\_URSP testing)
+3. Click **"Execute"** to view decoded results or generate encoded hex
+
+---
+
 ## 🖼 Sample Screenshots
 
 ### URSP Encoder (GUI)
 
-![image](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/dcd783df-dfe5-4303-b45f-62feab5b7b85)
-![image](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/ba3b1162-8404-4d0a-9bac-5060dea8ba76)
+Define rule components using dropdowns and structured fields
+Output is 3GPP-encoded hex, ready for AT command or file injection
+
+![Encoder UI](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/dcd783df-dfe5-4303-b45f-62feab5b7b85)
+![Encoder Output](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/ba3b1162-8404-4d0a-9bac-5060dea8ba76)
 
 ---
 
 ### URSP Decoder (GUI)
 
-![image](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/94341c95-5545-4749-858d-dd41411878a2)
-![image](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/fa0a8ea3-11c2-45c1-862e-de2a83d8186f)
+Paste raw hex from logs or SIM file
+Structured output shows traffic filters, S-NSSAI, precedence, and more
+
+![Decoder Input](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/94341c95-5545-4749-858d-dd41411878a2)
+![Decoder Output](https://github.com/joostone-ahn/URSP_Analyzer/assets/98713651/fa0a8ea3-11c2-45c1-862e-de2a83d8186f)
 
 ---
 
@@ -90,3 +116,5 @@ python ui_main.py
 * 📘 [3GPP TS 24.501 – NAS Signaling Procedures](https://www.3gpp.org/ftp/Specs/archive/24_series/24.501/)
 * 📘 [3GPP TS 31.121 – EF\_URSP File Format in UICC](https://www.3gpp.org/ftp/Specs/archive/31_series/31.121/)
 * 📘 [3GPP TS 23.503 – Policy and Charging Control Framework](https://www.3gpp.org/ftp/Specs/archive/23_series/23.503/)
+
+---
