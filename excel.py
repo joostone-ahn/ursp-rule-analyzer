@@ -1,7 +1,5 @@
 from datetime import datetime
 import os
-import pandas as pd
-import win32com.client as win32
 
 def to_excel(df_payload):
     current_datetime = datetime.now()
