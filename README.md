@@ -1,4 +1,4 @@
-# 🧾 Network Slicing URSP Rules Analyzer
+# 📡 Network Slicing URSP Rules Analyzer
 
 A Python-based GUI tool for **decoding and encoding URSP (UE Route Selection Policy)** rules used in 5G network slicing — built to assist engineers interpreting protocol logs or provisioning rules on real devices.
 
