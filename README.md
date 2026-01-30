@@ -22,7 +22,7 @@ In protocol engineering, one of the most persistent challenges is dealing with r
 ```bash
 docker run -d \
   -p 8081:8081 \
-  --name ursp-analyzer \
+  --name ursp-rule-analyzer \
   ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
 ```
 
@@ -31,13 +31,13 @@ docker run -d \
 docker run -d \
   --platform linux/amd64 \
   -p 8081:8081 \
-  --name ursp-analyzer \
+  --name ursp-rule-analyzer \
   ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
 ```
 
 #### Windows
 ```powershell
-docker run -d -p 8081:8081 --name ursp-analyzer ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
+docker run -d -p 8081:8081 --name ursp-rule-analyzer ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
 ```
 
 > **Note**: 
@@ -50,16 +50,16 @@ Open your browser and navigate to: http://localhost:8081
 #### Container Management
 ```bash
 # Start
-docker start ursp-analyzer
+docker start ursp-rule-analyzer
 
 # Stop
-docker stop ursp-analyzer
+docker stop ursp-rule-analyzer
 
 # Remove
-docker rm -f ursp-analyzer
+docker rm -f ursp-rule-analyzer
 
 # View logs
-docker logs -f ursp-analyzer
+docker logs -f ursp-rule-analyzer
 ```
 
 ### 2. Running from Source (For Development)
