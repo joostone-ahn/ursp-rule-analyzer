@@ -88,67 +88,29 @@ python src/main.py
 
 ### Encoder Tab - Creating URSP Rules
 
-Use this when you need to:
-- Generate hex data for SIM card provisioning
-- Create network policy messages
-- Validate rule configurations before deployment
+Use this when you need to generate hex data for SIM card provisioning or create network policy messages.
 
-#### Basic Setup
-1. **PTI (Procedure Transaction Identity)**: Usually 151, change only if your network uses different values
-2. **PLMN (Network ID)**: Your network's identifier (e.g., 45006F for LG U+)
-3. **UPSC**: Policy section identifier, typically 2
-4. **URSP Rule Count**: How many different rules you want to create
-
-#### Configuring Rules
-Each rule defines when and how the UE should route traffic:
-
-**Traffic Descriptor** - Defines what traffic this rule applies to:
-- **Match-all**: Rule applies to all traffic (most common)
-- **OS Id + OS App Id**: Rule for specific mobile apps
-- **DNN**: Rule for specific network slices
-- **Connection capabilities**: Rule based on service types (IMS, MMS, etc.)
-
-**Route Selection Descriptors (RSD)** - Defines how traffic should be handled:
-- **SSC Mode**: Session continuity mode (1, 2, or 3)
-- **S-NSSAI**: Network slice identifier
-- **DNN**: Data Network Name for the slice
-- **Access Type**: 3GPP or Non-3GPP access preference
+1. **Configure Basic Information**: Set PTI, PLMN, UPSC values and number of URSP rules
+2. **Define Traffic Rules**: Configure which types of traffic this rule should apply to: Match-all, OS Id + OS App Id, DNN, Connection capabilities
+3. **Set Route Selection**: Configure route selection descriptors: SSC mode, S-NSSAI, DNN, Access type, Multi-access preference, etc.
+4. **Generate Output**: Click **🚀 Encoding** to create hex data and protocol messages
 
 ### Decoder Tab - Analyzing Existing Data
 
-Use this when you have:
-- Hex logs from network traces
-- SIM card dumps
-- Protocol analyzer captures
+Use this when you have hex logs from network traces, SIM card dumps, or protocol analyzer captures.
 
 Simply paste the hex data and click **🔍 Decode** to see the structured breakdown.
 
 ### Result Tab - Understanding Your Data
 
-#### **SIM EF_URSP Section**
-- **Purpose**: Exact data format for SIM card programming
-- **When to use**: Provisioning URSP rules to SIM/eSIM cards
-- **What you get**: Ready-to-use hex string for SIM file writing
+The Result tab provides four types of analysis output:
 
-#### **DL NAS TRANSPORT Section**  
-- **Purpose**: Complete over-the-air message format
-- **When to use**: Understanding network-to-UE policy updates
-- **What you get**: Full NAS message with proper headers
+- **SIM EF_URSP**: Ready-to-use hex data for SIM card programming
+- **DL NAS TRANSPORT**: Complete over-the-air message format for network communication
+- **URSP RULE**: Human-readable rule summary for quick verification and troubleshooting
+- **MANAGE UE POLICY COMMAND**: Detailed byte-by-byte protocol analysis for deep debugging
 
-#### **URSP RULE Section**
-- **Purpose**: Human-readable rule summary
-- **When to use**: Quick verification and troubleshooting
-- **What you get**: Table showing all rules, precedence, and mappings
-
-#### **MANAGE UE POLICY COMMAND Section**
-- **Purpose**: Detailed protocol analysis
-- **When to use**: Deep debugging and protocol validation
-- **What you get**: Byte-by-byte message breakdown with descriptions
-
-#### Export and Copy Features
-- **📋 Copy buttons**: Quick copy of any section's data
-- **💾 Save Excel**: Complete analysis saved to timestamped Excel file in `xlsx/` folder
-- **Use cases**: Documentation, sharing with team, compliance reporting
+Each section includes **📋 Copy** buttons for quick data sharing, and **💾 Save Excel** exports detailed message analysis to Excel files in the `xlsx/` folder.
 
 ---
 
