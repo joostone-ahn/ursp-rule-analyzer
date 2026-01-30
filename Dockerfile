@@ -14,9 +14,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 
-# Create directories
-RUN mkdir -p /app/xlsx
-
 # Set Python path to include src directory
 ENV PYTHONPATH=/app/src
 
