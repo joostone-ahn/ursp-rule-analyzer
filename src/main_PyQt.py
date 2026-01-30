@@ -59,7 +59,7 @@ class MyWidget(QWidget):
         self.setGeometry(100, 100, 1700, 900)
         self.show()
 
-        copyright_label = QLabel('Copyright © 2023 JUSEOK AHN<ajs3013@lguplus.co.kr> All rights reserved.')
+        copyright_label = QLabel('Copyright © 2026 JUSEOK AHN<ajs3013@lguplus.co.kr> All rights reserved.')
         copyright_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         main_layout.addWidget(copyright_label)
 
