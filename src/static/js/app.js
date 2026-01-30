@@ -865,7 +865,7 @@ function setupSaveButton() {
     
     if (saveBtn) {
         saveBtn.addEventListener('click', async function() {
-            saveStatus.textContent = 'Saving...';
+            saveStatus.textContent = 'Preparing download...';
             saveStatus.className = 'status-message';
             
             try {
@@ -876,12 +876,33 @@ function setupSaveButton() {
                     }
                 });
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    saveStatus.textContent = `Saved: ${result.filename}`;
+                if (response.ok) {
+                    // Get filename from Content-Disposition header or use default
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = 'MANAGE_UE_POLICY_COMMAND.xlsx';
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (filenameMatch && filenameMatch[1]) {
+                            filename = filenameMatch[1].replace(/['"]/g, '');
+                        }
+                    }
+                    
+                    // Create blob and download
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    saveStatus.textContent = `Downloaded: ${filename}`;
                     saveStatus.className = 'status-message success';
                 } else {
+                    const result = await response.json();
                     saveStatus.textContent = 'Error: ' + result.error;
                     saveStatus.className = 'status-message error';
                 }

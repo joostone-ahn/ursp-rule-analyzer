@@ -173,6 +173,9 @@ def decode():
 @app.route('/save_excel', methods=['POST'])
 def save_excel():
     try:
+        from flask import send_file
+        import tempfile
+        
         pol_cmd_data = session.get('pol_cmd_excel')
         if not pol_cmd_data:
             return jsonify({'success': False, 'error': 'No data to save'}), 400
@@ -181,17 +184,19 @@ def save_excel():
         
         current_datetime = datetime.now()
         timestamp = current_datetime.strftime("%Y%m%d_%H%M%S")
-        output_file = f'MANAGE_UE_POLICY_COMMAND_{timestamp}.xlsx'
+        filename = f'MANAGE_UE_POLICY_COMMAND_{timestamp}.xlsx'
         
-        os.makedirs('xlsx', exist_ok=True)
-        output_path = os.path.join('xlsx', output_file)
-        df_payload.to_excel(output_path, index=False)
+        # Create temporary file for download
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
+        df_payload.to_excel(temp_file.name, index=False)
+        temp_file.close()
         
-        return jsonify({
-            'success': True,
-            'filename': output_file,
-            'path': os.path.abspath(output_path)
-        })
+        return send_file(
+            temp_file.name,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
     
     except Exception as e:
         return jsonify({
