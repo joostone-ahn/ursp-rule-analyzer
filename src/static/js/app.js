@@ -566,9 +566,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup decode button
     setupDecodeButton();
-    
-    // Setup save button
-    setupSaveButton();
 });
 
 // Tab functionality
@@ -858,66 +855,9 @@ function setupDecodeButton() {
     }
 }
 
-// Save button functionality
-function setupSaveButton() {
-    const saveBtn = document.getElementById('save-btn');
-    const saveStatus = document.getElementById('save-status');
-    
-    if (saveBtn) {
-        saveBtn.addEventListener('click', async function() {
-            saveStatus.textContent = 'Preparing download...';
-            saveStatus.className = 'status-message';
-            
-            try {
-                const response = await fetch('/save_excel', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    // Get filename from Content-Disposition header or use default
-                    const contentDisposition = response.headers.get('Content-Disposition');
-                    let filename = 'MANAGE_UE_POLICY_COMMAND.xlsx';
-                    if (contentDisposition) {
-                        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-                        if (filenameMatch && filenameMatch[1]) {
-                            filename = filenameMatch[1].replace(/['"]/g, '');
-                        }
-                    }
-                    
-                    // Create blob and download
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    
-                    saveStatus.textContent = `Downloaded: ${filename}`;
-                    saveStatus.className = 'status-message success';
-                } else {
-                    const result = await response.json();
-                    saveStatus.textContent = 'Error: ' + result.error;
-                    saveStatus.className = 'status-message error';
-                }
-            } catch (error) {
-                saveStatus.textContent = 'Network error: ' + error.message;
-                saveStatus.className = 'status-message error';
-            }
-        });
-    }
-}
-
 // Display results in Result tab
 function displayResults(result) {
     const resultSections = document.getElementById('result-sections');
-    const saveBtn = document.getElementById('save-btn');
     
     if (!resultSections) {
         console.error('result-sections element not found');
@@ -978,9 +918,6 @@ function displayResults(result) {
     }
     
     resultSections.innerHTML = output;
-    if (saveBtn) {
-        saveBtn.disabled = false;
-    }
 }
 
 // Helper function to escape text for JavaScript string

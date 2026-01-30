@@ -175,10 +175,6 @@ Sample:
                         <p>Run Encoding or Decoding to see results here</p>
                     </div>
                 </div>
-                <div class="button-section">
-                    <button id="save-btn" class="btn-primary" disabled>💾 Save Excel</button>
-                    <span id="save-status" class="status-message"></span>
-                </div>
             </div>
         </div>
 
@@ -280,41 +276,6 @@ Sample:
                         console.error('Decode error:', error);
                         decodeStatus.textContent = 'Network error: ' + error.message;
                         decodeStatus.className = 'status-message error';
-                    }
-                });
-            }
-            
-            // Save button functionality
-            const saveBtn = document.getElementById('save-btn');
-            const saveStatus = document.getElementById('save-status');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', async function() {
-                    console.log('Save button clicked');
-                    saveStatus.textContent = 'Saving...';
-                    saveStatus.className = 'status-message';
-                    
-                    try {
-                        const response = await fetch('/save_excel', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        
-                        const result = await response.json();
-                        console.log('Save result:', result);
-                        
-                        if (result.success) {
-                            saveStatus.textContent = `Saved: ${result.filename}`;
-                            saveStatus.className = 'status-message success';
-                        } else {
-                            saveStatus.textContent = 'Error: ' + result.error;
-                            saveStatus.className = 'status-message error';
-                        }
-                    } catch (error) {
-                        console.error('Save error:', error);
-                        saveStatus.textContent = 'Network error: ' + error.message;
-                        saveStatus.className = 'status-message error';
                     }
                 });
             }

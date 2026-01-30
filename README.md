@@ -112,7 +112,7 @@ The Result tab provides four types of analysis output:
 - **URSP RULE**: Human-readable rule summary for quick verification and troubleshooting
 - **MANAGE UE POLICY COMMAND**: Detailed byte-by-byte protocol analysis for deep debugging
 
-Each section includes **📋 Copy** buttons for quick data sharing, and **💾 Save Excel** downloads detailed message analysis as Excel files to your preferred location.
+Each section includes **📋 Copy** buttons for quick data sharing.
 
 ---
 

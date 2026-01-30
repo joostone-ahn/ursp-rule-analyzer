@@ -57,8 +57,6 @@ def encode():
         ef_ursp_formatted = display.hex_format(ef_ursp)
         dl_nas_formatted = display.hex_format(dl_nas)
         
-        session['pol_cmd_excel'] = df_payload.to_dict('records')
-        
         return jsonify({
             'success': True,
             'ef_ursp': ef_ursp_formatted,
@@ -93,8 +91,6 @@ def decode():
             if payload_type == '05':
                 df_dl_nas = pd.DataFrame({'hex': hex_str[start:]})
                 df_payload, ursp_sum, rsd_sum, rsd_conts, PTI, PLMN, UPSC = decoder.ursp_decoder(df_dl_nas)
-                
-                session['pol_cmd_excel'] = df_payload.to_dict('records')
                 
                 df_dl_nas_enc, ef_ursp, dl_nas = encoder.ursp_encoder(ursp_sum, rsd_sum, rsd_conts, PTI, PLMN, UPSC)
                 
@@ -163,40 +159,6 @@ def decode():
             }
         
         return jsonify(result)
-    
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 400
-
-@app.route('/save_excel', methods=['POST'])
-def save_excel():
-    try:
-        from flask import send_file
-        import tempfile
-        
-        pol_cmd_data = session.get('pol_cmd_excel')
-        if not pol_cmd_data:
-            return jsonify({'success': False, 'error': 'No data to save'}), 400
-        
-        df_payload = pd.DataFrame(pol_cmd_data)
-        
-        current_datetime = datetime.now()
-        timestamp = current_datetime.strftime("%Y%m%d_%H%M%S")
-        filename = f'MANAGE_UE_POLICY_COMMAND_{timestamp}.xlsx'
-        
-        # Create temporary file for download
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
-        df_payload.to_excel(temp_file.name, index=False)
-        temp_file.close()
-        
-        return send_file(
-            temp_file.name,
-            as_attachment=True,
-            download_name=filename,
-            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
     
     except Exception as e:
         return jsonify({
