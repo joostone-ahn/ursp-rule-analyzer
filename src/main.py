@@ -183,8 +183,8 @@ def save_excel():
         timestamp = current_datetime.strftime("%Y%m%d_%H%M%S")
         output_file = f'MANAGE_UE_POLICY_COMMAND_{timestamp}.xlsx'
         
-        os.makedirs('uploads', exist_ok=True)
-        output_path = os.path.join('uploads', output_file)
+        os.makedirs('xlsx', exist_ok=True)
+        output_path = os.path.join('xlsx', output_file)
         df_payload.to_excel(output_path, index=False)
         
         return jsonify({

@@ -1,9 +1,3 @@
-# macOS
-.DS_Store
-
-# IDE
-.idea/
-
 # Python
 __pycache__/
 *.py[cod]
@@ -25,11 +19,30 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual Environment
+.venv/
 venv/
 ENV/
 env/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Flask
 instance/
@@ -38,13 +51,10 @@ instance/
 # Session files
 /tmp/flask_session/
 
-# Uploads
+# Generated files
+xlsx/
 uploads/*
 !uploads/.gitkeep
-
-# PyInstaller
-*.manifest
-*.spec
 
 # Logs
 *.log

@@ -12,130 +12,48 @@ A powerful web-based tool for analyzing URSP (UE Route Selection Policy) rules u
 
 In protocol engineering, one of the most persistent challenges is dealing with raw hex data found in logs or SIM files that standard tools can't parse. This tool bridges that gap by translating **hex-encoded URSP rules** into human-readable structures — and vice versa — using a modern web-based interface.
 
-### Key Advantages
-- ✅ **No Hardware Required**: Analyze logs from any device with protocol diagnostics
-- ✅ **Web-Based**: Access from any browser, no installation needed
-- ✅ **Dual Mode**: Both encoding and decoding capabilities
-- ✅ **3GPP Compliant**: Based on TS 24.526/24.501/31.121 standards
-- ✅ **Real-time Processing**: Interactive analysis with immediate results
-
----
-
-## ✨ Key Features
-
-### 📊 Dual Analysis Modes
-1. **Encoder**: Visually define URSP rules and generate 3GPP-compliant hex output
-2. **Decoder**: Parse raw hex data from NAS logs or SIM files into structured format
-
-### 🔍 Advanced Capabilities
-- **Multiple Input Methods**: File upload or direct text paste
-- **Real-time Validation**: Immediate feedback on rule configuration
-- **Export Support**: Save analysis results to Excel format
-- **Interactive UI**: Modern responsive design with split-panel layout
-- **Error Detection**: Automatic identification of protocol violations
-
-### 🎨 User Interface
-- **Split Layout**: Input panel on left, results on right for efficient workflow
-- **Color-Coded Results**: Visual indicators for different message types
-- **File Upload**: Drag-and-drop or browse for log files
-- **Export**: Download analysis results to Excel
-
----
-
-## 🧾 Supported Message Types
-
-| Message Type | Detection Logic | Notes |
-|--------------|-----------------|-------|
-| DL NAS Transport | Contains `68` + `05` | MANAGE UE POLICY COMMAND decoding |
-| UL NAS Transport | Contains `67` + `05` | UE policy container responses |
-| UE STATE INDICATION | Contains `04` | UE state reporting |
-| Registration Request | Contains `41` | Basic detection (TBD) |
-
 ---
 
 ## 🚀 Quick Start
 
-### 1. Install Docker Desktop
-Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+### 1. Using Docker (Recommended)
 
-### 2. Run Container
-
-#### macOS (Intel)
+#### Mac (Intel)
 ```bash
 docker run -d \
-  -p 8082:8082 \
-  -v $(pwd)/uploads:/app/uploads \
+  -p 8081:8081 \
   --name ursp-analyzer \
-  ghcr.io/joostone-ahn/network-slicing-ursp-rules-analyzer:latest
+  ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
 ```
 
-#### macOS (Apple Silicon - M1/M2/M3)
+#### Mac (Apple Silicon)
 ```bash
 docker run -d \
   --platform linux/amd64 \
-  -p 8082:8082 \
-  -v $(pwd)/uploads:/app/uploads \
+  -p 8081:8081 \
   --name ursp-analyzer \
-  ghcr.io/joostone-ahn/network-slicing-ursp-rules-analyzer:latest
+  ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
 ```
 
-> **Note**: Use `--platform linux/amd64` for Apple Silicon (runs via Rosetta 2 emulation)
-
-#### Windows (PowerShell)
+#### Windows
 ```powershell
-docker run -d -p 8082:8082 -v ${PWD}/uploads:/app/uploads --name ursp-analyzer ghcr.io/joostone-ahn/network-slicing-ursp-rules-analyzer:latest
+docker run -d -p 8081:8081 --name ursp-analyzer ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
 ```
 
-### 3. Access
-Open your browser and navigate to: http://localhost:8082
+> **Note**: 
+> - Apple Silicon users must use `--platform linux/amd64` as the image is built for AMD64 architecture
+> - Windows users need WSL2 installed for Docker Desktop
 
----
+#### Access Application
+Open your browser and navigate to: http://localhost:8081
 
-## 📦 Running from Source (For Developers)
-
-If you have cloned the repository and want to run the application directly from Python source:
-
-### 1. Create Virtual Environment
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Run Application
-
-**Web Version (recommended):**
-```bash
-python src/main.py
-```
-
-**PyQt Desktop Version:**
-```bash
-python src/main_PyQt.py
-```
-
-The web application will be available at http://localhost:8082
-
-> **Note**: This method is recommended for developers who want to modify the code or contribute to the project.
-
----
-
-## 🔧 Docker Management
-
-### Container Control
+#### Container Management
 ```bash
 # Start
 docker start ursp-analyzer
 
 # Stop
 docker stop ursp-analyzer
-
-# Restart
-docker restart ursp-analyzer
 
 # Remove
 docker rm -f ursp-analyzer
@@ -144,58 +62,93 @@ docker rm -f ursp-analyzer
 docker logs -f ursp-analyzer
 ```
 
-### Update Image
+### 2. Running from Source (For Development)
+
+If you want to modify the code or run from source:
+
 ```bash
-# Stop and remove old container
-docker rm -f ursp-analyzer
+# Clone repository
+git clone <repository-url>
+cd ursp-rule-analyzer
 
-# Pull latest image
-docker pull ghcr.io/joostone-ahn/ursp-rule-analyzer:latest
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Run new container (use the command for your platform above)
+# Install dependencies
+pip install -r requirements.txt
+
+# Run application
+python src/main.py
 ```
 
 ---
 
 ## 📖 How to Use
 
-### Step 1: Choose Mode
-- **Encoder**: Create new URSP rules from scratch
-- **Decoder**: Analyze existing hex data from logs
+### Encoder Tab - Creating URSP Rules
 
-### Step 2: Input Data
+Use this when you need to:
+- Generate hex data for SIM card provisioning
+- Create network policy messages
+- Validate rule configurations before deployment
 
-#### For Encoding:
-1. Fill in basic information (PTI, PLMN, UPSC)
-2. Configure URSP rules with traffic descriptors
-3. Set route selection descriptors
-4. Click **Encode** button
+#### Basic Setup
+1. **PTI (Procedure Transaction Identity)**: Usually 151, change only if your network uses different values
+2. **PLMN (Network ID)**: Your network's identifier (e.g., 45006F for LG U+)
+3. **UPSC**: Policy section identifier, typically 2
+4. **URSP Rule Count**: How many different rules you want to create
 
-#### For Decoding:
-1. Upload a log file or paste hex data directly
-2. Click **Decode** button
-3. Review the parsed results
+#### Configuring Rules
+Each rule defines when and how the UE should route traffic:
 
-### Step 3: Analyze Results
-- **EF_URSP**: SIM file format output
-- **DL NAS Transport**: Network message format
-- **URSP Information**: Structured rule breakdown
-- **Payload Details**: Complete protocol analysis
+**Traffic Descriptor** - Defines what traffic this rule applies to:
+- **Match-all**: Rule applies to all traffic (most common)
+- **OS Id + OS App Id**: Rule for specific mobile apps
+- **DNN**: Rule for specific network slices
+- **Connection capabilities**: Rule based on service types (IMS, MMS, etc.)
 
-### Step 4: Export (Optional)
-Click **Save to Excel** to download complete analysis results
+**Route Selection Descriptors (RSD)** - Defines how traffic should be handled:
+- **SSC Mode**: Session continuity mode (1, 2, or 3)
+- **S-NSSAI**: Network slice identifier
+- **DNN**: Data Network Name for the slice
+- **Access Type**: 3GPP or Non-3GPP access preference
 
----
+### Decoder Tab - Analyzing Existing Data
 
-## 🎨 Color Guide
+Use this when you have:
+- Hex logs from network traces
+- SIM card dumps
+- Protocol analyzer captures
 
-### Message Types
-| Color | Meaning | Examples |
-|-------|---------|----------|
-| 🔵 **Blue** | Information | DL NAS Transport success |
-| 🟢 **Green** | Success | Successful encoding/decoding |
-| 🔴 **Red** | Error | Protocol violations, parsing failures |
-| 🟡 **Yellow** | Warning | UL NAS Transport responses |
+Simply paste the hex data and click **🔍 Decode** to see the structured breakdown.
+
+### Result Tab - Understanding Your Data
+
+#### **SIM EF_URSP Section**
+- **Purpose**: Exact data format for SIM card programming
+- **When to use**: Provisioning URSP rules to SIM/eSIM cards
+- **What you get**: Ready-to-use hex string for SIM file writing
+
+#### **DL NAS TRANSPORT Section**  
+- **Purpose**: Complete over-the-air message format
+- **When to use**: Understanding network-to-UE policy updates
+- **What you get**: Full NAS message with proper headers
+
+#### **URSP RULE Section**
+- **Purpose**: Human-readable rule summary
+- **When to use**: Quick verification and troubleshooting
+- **What you get**: Table showing all rules, precedence, and mappings
+
+#### **MANAGE UE POLICY COMMAND Section**
+- **Purpose**: Detailed protocol analysis
+- **When to use**: Deep debugging and protocol validation
+- **What you get**: Byte-by-byte message breakdown with descriptions
+
+#### Export and Copy Features
+- **📋 Copy buttons**: Quick copy of any section's data
+- **💾 Save Excel**: Complete analysis saved to timestamped Excel file in `xlsx/` folder
+- **Use cases**: Documentation, sharing with team, compliance reporting
 
 ---
 
@@ -205,18 +158,32 @@ Click **Save to Excel** to download complete analysis results
 - **Python 3.11+**: Core language
 - **Flask 3.1+**: Web framework
 - **Flask-Session**: Server-side session management
-- **pandas**: Data processing and analysis
+- **pandas**: Data processing and Excel export
 - **openpyxl**: Excel file generation
 
 ### Frontend
-- **HTML5 + CSS3**: Modern web standards
-- **Vanilla JavaScript**: No framework dependencies
-- **Responsive Design**: Works on desktop and mobile
+- **HTML5 + CSS3**: Modern web standards with CSS Grid and Flexbox
+- **Vanilla JavaScript**: No framework dependencies, pure ES6+
+- **Responsive Design**: Mobile-first approach with breakpoints
 
-### Deployment
-- **Gunicorn**: WSGI HTTP server
-- **Docker**: Containerization support
-- **GitHub Container Registry**: Image distribution
+### File Structure
+```
+src/
+├── main.py              # Flask web server
+├── main_PyQt.py         # Desktop version (legacy)
+├── encoder.py           # URSP rule encoding logic
+├── decoder.py           # Protocol analysis and decoding
+├── display.py           # Result formatting
+├── spec.py              # 3GPP standards reference
+├── excel.py             # Excel export functionality
+├── templates/
+│   └── index.html       # Main web interface
+└── static/
+    ├── css/
+    │   └── style.css    # Modern styling
+    └── js/
+        └── app.js       # Interactive functionality
+```
 
 ---
 
@@ -225,33 +192,34 @@ Click **Save to Excel** to download complete analysis results
 ```
 ┌─────────────────────────────────────────────┐
 │           Frontend (Browser)                │
-│  • Split Panel Layout                       │
-│  • File Upload Interface                    │
-│  • Real-time Results Display                │
+│  • Three-Tab Interface                      │
+│  • Dynamic Card Management                  │
+│  • Real-time Form Validation                │
+│  • Copy & Export Functionality              │
 └──────────────┬──────────────────────────────┘
-               │ HTTP/JSON
+               │ HTTP/JSON API
 ┌──────────────▼──────────────────────────────┐
-│         Flask Web Server                    │
-│  • Route Handlers                           │
-│  • Session Management                       │
-│  • File Processing                          │
+│         Flask Web Server (Port 8081)        │
+│  • /encode - URSP rule encoding             │
+│  • /decode - Protocol analysis              │
+│  • /save_excel - Excel export               │
+│  • Session management                       │
 └──────────────┬──────────────────────────────┘
                │
 ┌──────────────▼──────────────────────────────┐
 │       Core Processing Pipeline              │
-│                                              │
-│  encoder.py  → URSP Rule Encoding           │
-│  decoder.py  → Protocol Analysis            │
-│  display.py  → Result Formatting            │
-│  spec.py     → 3GPP Standards Reference     │
+│                                             │
+│  encoder.py  → URSP Rule Encoding          │
+│  decoder.py  → Protocol Analysis           │
+│  display.py  → Result Formatting           │
+│  spec.py     → 3GPP Standards Reference    │
 └──────────────┬──────────────────────────────┘
                │
 ┌──────────────▼──────────────────────────────┐
-│       Reference Data (3GPP Standards)       │
-│  • Traffic Descriptor Types                 │
-│  • Route Selection Descriptor Types         │
-│  • Message Type Definitions                 │
-│  • Protocol Constants                       │
+│         Output Generation                   │
+│  • xlsx/ - Excel files                     │
+│  • Hex-formatted results                   │
+│  • Structured text output                  │
 └─────────────────────────────────────────────┘
 ```
 
@@ -287,9 +255,6 @@ This software is proprietary and confidential. Developed for internal analysis, 
 - Engineers debugging UE-network communication
 - Researchers working with modern 5G SA infrastructure
 - Network operators validating URSP policies
-
-### Patent Information
-This software is protected by patent applications filed with the Korean Intellectual Property Office.
 
 ---
 

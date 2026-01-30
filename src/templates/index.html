@@ -23,17 +23,6 @@
 
         <!-- Encoder Tab -->
         <div id="encoder-tab" class="tab-content active">
-            <!-- Top Control Bar -->
-            <div class="top-control-bar">
-                <button id="encode-btn" class="btn-primary">🚀 Encoding</button>
-                <span id="encode-status" class="status-message"></span>
-                
-                <div class="ursp-count-section">
-                    <label>Number of URSP Rules:</label>
-                    <input type="number" id="ursp-count" min="1" max="5" value="1">
-                </div>
-            </div>
-
             <!-- Basic Information -->
             <div class="info-section">
                 <div class="info-section-header">
@@ -51,6 +40,10 @@
                     <div class="info-item">
                         <label>UPSC</label>
                         <input type="text" id="upsc" value="2">
+                    </div>
+                    <div class="info-item">
+                        <label>URSP Rule Count</label>
+                        <input type="number" id="ursp-count" min="1" max="5" value="1">
                     </div>
                 </div>
             </div>
@@ -130,6 +123,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Encoding Button Section -->
+            <div class="encoding-section">
+                <button id="encode-btn" class="btn-primary">🚀 Encoding</button>
+                <span id="encode-status" class="status-message"></span>
             </div>
         </div>
 
@@ -217,115 +216,8 @@ Sample:
                 });
             });
             
-            // URSP count change functionality
-            const urspCountInput = document.getElementById('ursp-count');
-            if (urspCountInput) {
-                urspCountInput.addEventListener('change', function() {
-                    const newCount = parseInt(this.value);
-                    console.log('URSP count changed to:', newCount);
-                    updateURSPCards(newCount);
-                });
-            }
-            
-            // Setup event delegation for dynamic RSD and Contents count changes
-            const container = document.getElementById('ursp-container');
-            if (container) {
-                container.addEventListener('change', function(event) {
-                    const target = event.target;
-                    console.log('Change event detected:', target.type, target.value);
-                    
-                    // Handle RSD count changes (in URSP fields)
-                    if (target.type === 'number' && target.closest('.ursp-fields')) {
-                        const urspCard = target.closest('.ursp-card');
-                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
-                        const newRSDCount = parseInt(target.value);
-                        console.log(`RSD count changed for URSP ${urspIndex} to:`, newRSDCount);
-                        updateRSDCards(urspIndex, newRSDCount);
-                    }
-                    
-                    // Handle Contents count changes (in RSD fields)
-                    else if (target.type === 'number' && target.closest('.rsd-fields')) {
-                        const rsdCard = target.closest('.rsd-card');
-                        const urspCard = target.closest('.ursp-card');
-                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
-                        const rsdIndex = parseInt(rsdCard.getAttribute('data-rsd-index'));
-                        const newContentsCount = parseInt(target.value);
-                        console.log(`Contents count changed for URSP ${urspIndex}, RSD ${rsdIndex} to:`, newContentsCount);
-                        updateContentsCards(urspIndex, rsdIndex, newContentsCount);
-                    }
-                });
-                
-                // Also handle select changes for TD Type and RSD Type
-                container.addEventListener('change', function(event) {
-                    const target = event.target;
-                    
-                    // Handle Traffic Descriptor Type changes
-                    if (target.tagName === 'SELECT' && target.closest('.ursp-fields')) {
-                        const urspCard = target.closest('.ursp-card');
-                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
-                        console.log(`TD Type changed for URSP ${urspIndex} to:`, target.value);
-                        handleTDTypeChange(urspIndex, target.value);
-                    }
-                    
-                    // Handle RSD Contents Type changes
-                    else if (target.tagName === 'SELECT' && target.closest('.rsd-contents-fields')) {
-                        const contentsCard = target.closest('.rsd-contents-card');
-                        const rsdCard = target.closest('.rsd-card');
-                        const urspCard = target.closest('.ursp-card');
-                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
-                        const rsdIndex = parseInt(rsdCard.getAttribute('data-rsd-index'));
-                        const contentsIndex = parseInt(contentsCard.getAttribute('data-contents-index'));
-                        console.log(`RSD Type changed for URSP ${urspIndex}, RSD ${rsdIndex}, Contents ${contentsIndex} to:`, target.value);
-                        handleRSDTypeChange(urspIndex, rsdIndex, contentsIndex, target.value);
-                    }
-                });
-            }
-            
-            // Encode button functionality
-            const encodeBtn = document.getElementById('encode-btn');
-            const encodeStatus = document.getElementById('encode-status');
-            if (encodeBtn) {
-                encodeBtn.addEventListener('click', async function() {
-                    console.log('Encode button clicked');
-                    encodeStatus.textContent = 'Encoding...';
-                    encodeStatus.className = 'status-message';
-                    
-                    try {
-                        // Collect data from form
-                        const data = collectFormData();
-                        console.log('Collected data:', data);
-                        
-                        const response = await fetch('/encode', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(data)
-                        });
-                        
-                        const result = await response.json();
-                        console.log('Encode result:', result);
-                        
-                        if (result.success) {
-                            encodeStatus.textContent = 'Encoding completed successfully!';
-                            encodeStatus.className = 'status-message success';
-                            
-                            // Display results in Result tab
-                            displayResults(result);
-                            
-                            // Switch to Result tab
-                            document.querySelector('[data-tab="result"]').click();
-                        } else {
-                            encodeStatus.textContent = 'Error: ' + result.error;
-                            encodeStatus.className = 'status-message error';
-                        }
-                    } catch (error) {
-                        console.error('Encode error:', error);
-                        encodeStatus.textContent = 'Network error: ' + error.message;
-                        encodeStatus.className = 'status-message error';
-                    }
-                });
-            }
+            // Basic functionality set up
+            console.log('Basic functionality set up');
             
             // Decode button functionality
             const decodeBtn = document.getElementById('decode-btn');
@@ -538,10 +430,6 @@ Sample:
             return `
                 <div class="ursp-card-header">URSP Rule ${index}</div>
                 <div class="ursp-fields">
-                    <div class="field-group">
-                        <label>URSP Number</label>
-                        <input type="text" value="URSP_${index}" disabled>
-                    </div>
                     <div class="field-group">
                         <label>Precedence Value</label>
                         <input type="text" value="${precedenceValue}" placeholder="Enter value">
@@ -886,23 +774,34 @@ Sample:
             }
             
             let output = '';
-            const line = '─'.repeat(214);
             
-            if (result.ef_ursp) {
-                output += '<div class="result-section-card">';
-                output += '<div class="result-section-header ef-ursp">SIM EF_URSP</div>';
-                output += '<div class="result-section-content">';
-                output += '<div class="hex-display">' + result.ef_ursp + '</div>';
-                output += '</div></div>';
-            }
-            
-            if (result.dl_nas) {
-                output += '<div class="result-section-card">';
-                output += '<div class="result-section-header dl-nas">DL NAS TRANSPORT</div>';
-                output += '<div class="result-section-content">';
-                output += '<div class="hex-display">' + result.dl_nas + '</div>';
-                output += '<div class="result-divider"></div>';
-                output += '</div></div>';
+            // Create grid container for EF_URSP and DL_NAS side by side
+            if (result.ef_ursp || result.dl_nas) {
+                output += '<div class="result-sections-grid">';
+                
+                if (result.ef_ursp) {
+                    output += '<div class="result-section-card">';
+                    output += '<div class="result-section-header ef-ursp">';
+                    output += '<span>SIM EF_URSP</span>';
+                    output += '<button class="copy-btn" onclick="copyHexData(\'' + result.ef_ursp + '\')">📋 Copy</button>';
+                    output += '</div>';
+                    output += '<div class="result-section-content">';
+                    output += '<div class="hex-display">' + result.ef_ursp + '</div>';
+                    output += '</div></div>';
+                }
+                
+                if (result.dl_nas) {
+                    output += '<div class="result-section-card">';
+                    output += '<div class="result-section-header dl-nas">';
+                    output += '<span>DL NAS TRANSPORT</span>';
+                    output += '<button class="copy-btn" onclick="copyHexData(\'' + result.dl_nas + '\')">📋 Copy</button>';
+                    output += '</div>';
+                    output += '<div class="result-section-content">';
+                    output += '<div class="hex-display">' + result.dl_nas + '</div>';
+                    output += '</div></div>';
+                }
+                
+                output += '</div>';
             }
             
             if (result.ursp_info) {
@@ -910,7 +809,6 @@ Sample:
                 output += '<div class="result-section-header ursp-rule">URSP RULE</div>';
                 output += '<div class="result-section-content">';
                 output += '<div class="text-display">' + result.ursp_info + '\n\n' + result.ursp_conts + '</div>';
-                output += '<div class="result-divider"></div>';
                 output += '</div></div>';
             }
             
@@ -926,6 +824,28 @@ Sample:
             if (saveBtn) {
                 saveBtn.disabled = false;
             }
+        }
+        
+        // Function to copy hex data without formatting
+        function copyHexData(hexString) {
+            // Remove all spaces and formatting, keep only hex characters
+            const cleanHex = hexString.replace(/\s+/g, '').replace(/[^0-9A-Fa-f]/g, '');
+            
+            navigator.clipboard.writeText(cleanHex).then(function() {
+                // Show temporary success message
+                console.log('Hex data copied to clipboard!');
+                alert('Hex data copied to clipboard!');
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = cleanHex;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Hex data copied to clipboard!');
+            });
         }
         
         // Function to format hex display (similar to PyQt display.hex_format)
@@ -951,5 +871,6 @@ Sample:
             return formatted;
         }
     </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
