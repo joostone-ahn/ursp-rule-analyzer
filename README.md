@@ -90,10 +90,12 @@ python src/main.py
 
 Use this when you need to generate hex data for SIM card provisioning or create network policy messages.
 
-1. **Configure Basic Information**: Set PTI, PLMN, UPSC values and number of URSP rules
+1. **Configure Basic Information**: Set PTI, PLMN, UPSC values and adjust "URSP Rule Count" to create multiple URSP rules
 2. **Define Traffic Rules**: Configure which types of traffic this rule should apply to: Match-all, OS Id + OS App Id, DNN, Connection capabilities
-3. **Set Route Selection**: Configure route selection descriptors: SSC mode, S-NSSAI, DNN, Access type, Multi-access preference, etc.
+3. **Set Route Selection**: Configure route selection descriptors (RSD) by adjusting "RSD Count" and "RSD Type Count" within each rule: SSC mode, S-NSSAI, DNN, Access type, Multi-access preference, etc.
 4. **Generate Output**: Click **🚀 Encoding** to create hex data and protocol messages
+
+**Dynamic Rule Management**: Adjust count values to add/remove rules dynamically. Precedence values are automatically assigned to avoid conflicts.
 
 ### Decoder Tab - Analyzing Existing Data
 
