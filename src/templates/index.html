@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URSP Rule Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>📡 URSP Rule Analyzer</h1>
+                <div class="copyright">Copyright © 2026 JUSEOK AHN &lt;ajs3013@lguplus.co.kr&gt; All rights reserved.</div>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="encoder">Encoder</button>
+            <button class="tab-btn" data-tab="decoder">Decoder</button>
+            <button class="tab-btn" data-tab="result">Result</button>
+        </div>
+
+        <!-- Encoder Tab -->
+        <div id="encoder-tab" class="tab-content active">
+            <!-- Top Control Bar -->
+            <div class="top-control-bar">
+                <button id="encode-btn" class="btn-primary">🚀 Encoding</button>
+                <span id="encode-status" class="status-message"></span>
+                
+                <div class="ursp-count-section">
+                    <label>Number of URSP Rules:</label>
+                    <input type="number" id="ursp-count" min="1" max="5" value="1">
+                </div>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="info-section">
+                <div class="info-section-header">
+                    <h3>⚙️ Basic Information</h3>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>PTI</label>
+                        <input type="text" id="pti" value="151">
+                    </div>
+                    <div class="info-item">
+                        <label>PLMN</label>
+                        <input type="text" id="plmn" value="45006F">
+                    </div>
+                    <div class="info-item">
+                        <label>UPSC</label>
+                        <input type="text" id="upsc" value="2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- URSP Rules -->
+            <div class="ursp-section">
+                <div id="ursp-container" class="ursp-container">
+                    <!-- Default URSP card (like PyQt initialization) -->
+                    <div class="ursp-card" data-ursp-index="0">
+                        <div class="ursp-card-header">URSP Rule 0</div>
+                        <div class="ursp-fields">
+                            <div class="field-group">
+                                <label>Precedence Value</label>
+                                <input type="text" value="1" placeholder="Enter value">
+                            </div>
+                            <div class="field-group">
+                                <label>Traffic Descriptor Type</label>
+                                <select>
+                                    <option value="Match-all" selected>Match-all</option>
+                                    <option value="OS Id + OS App Id">OS Id + OS App Id</option>
+                                    <option value="DNN">DNN</option>
+                                    <option value="Connection capabilities">Connection capabilities</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label>Traffic Descriptor Value</label>
+                                <input type="text" value="-" disabled class="td-value-input">
+                            </div>
+                            <div class="field-group">
+                                <label>RSD Count</label>
+                                <input type="number" value="1" min="1" max="5">
+                            </div>
+                        </div>
+                        
+                        <div class="rsd-container">
+                            <div class="rsd-card" data-rsd-index="0">
+                                <div class="rsd-card-header">RSD 0_0</div>
+                                <div class="rsd-fields">
+                                    <div class="field-group">
+                                        <label>Precedence Value</label>
+                                        <input type="text" value="1" placeholder="Enter value">
+                                    </div>
+                                    <div class="field-group">
+                                        <label>Contents Count</label>
+                                        <input type="number" value="1" min="1" max="5">
+                                    </div>
+                                </div>
+                                
+                                <div class="rsd-contents-container">
+                                    <div class="rsd-contents-card" data-contents-index="0">
+                                        <div class="rsd-contents-header">RSD Contents 0_0_0</div>
+                                        <div class="rsd-contents-fields">
+                                            <div class="field-group">
+                                                <label>Type</label>
+                                                <select>
+                                                    <option value="SSC mode" selected>SSC mode</option>
+                                                    <option value="S-NSSAI">S-NSSAI</option>
+                                                    <option value="DNN">DNN</option>
+                                                    <option value="Access type">Access type</option>
+                                                    <option value="Multi-access preference">Multi-access preference</option>
+                                                    <option value="Non-seamless non-3GPP offload indication">Non-seamless non-3GPP offload indication</option>
+                                                    <option value="5G ProSe layer-3 UE-to-network relay offload indication">5G ProSe layer-3 UE-to-network relay offload indication</option>
+                                                    <option value="PDU session type">PDU session type</option>
+                                                    <option value="Preferred access type">Preferred access type</option>
+                                                    <option value="PDU session pair ID">PDU session pair ID</option>
+                                                    <option value="RSN">RSN</option>
+                                                </select>
+                                            </div>
+                                            <div class="field-group">
+                                                <label>Value</label>
+                                                <input type="text" value="" placeholder="Enter value" class="rsd-value-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decoder Tab -->
+        <div id="decoder-tab" class="tab-content">
+            <div class="decoder-card">
+                <div class="decoder-card-header">
+                    <h3>📥 Hex Log Input</h3>
+                    <p>Paste hex values of NAS message containing 'UE policy container'</p>
+                </div>
+                <div class="decoder-input-section">
+                    <textarea id="log-text" class="log-textarea" placeholder="Please paste hex values of NAS message containing 'UE policy container'.
+
+Sample:
+    0000   98 7a 10 a4 6f 51 00 15 17 ab b1 87 08 00 45 02
+    0010   00 bc 00 00 40 00 3d 84 7a 4e c0 a8 14 18 c0 a8
+    0020   2d 05 96 0c 96 0c 03 79 20 0c ef de 05 2c 00 03
+    0030   00 9c c6 14 7c 52 00 00 00 ad 00 00 00 3c 00 04
+    0040   40 80 87 00 00 04 00 0a 00 06 80 c8 00 00 00 20
+    0050   00 55 00 03 40 70 21 00 26 00 61 60 7e 02 c4 e5
+    0060   ff de 04 7e 00 68 05 00 53 01 01 00 4f 00 4d 02
+    0070   f8 23 00 48 00 03 00 44 01 00 1f 01 00 0b 88 09
+    0080   08 62 75 73 69 6e 65 73 73 00 0f 00 0d ff 00 0a
+    0090   02 04 01 e2 e1 11 08 01 10 01 00 20 02 00 01 01
+    00a0   00 1a 00 18 ff 00 15 02 04 01 de f2 22 04 09 08
+    00b0   69 6e 74 65 72 6e 65 74 08 01 10 01 00 6e 40 0a
+    00c0   0c 3b 9a ca 00 30 3b 9a ca 00"></textarea>
+                </div>
+                <div class="button-section">
+                    <button id="decode-btn" class="btn-primary">🔍 Decoding</button>
+                    <span id="decode-status" class="status-message"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Tab -->
+        <div id="result-tab" class="tab-content">
+            <div class="result-container">
+                <div id="result-sections">
+                    <!-- Results will be dynamically inserted here -->
+                    <div class="result-placeholder">
+                        <div class="placeholder-icon">📊</div>
+                        <h3>No Results Yet</h3>
+                        <p>Run Encoding or Decoding to see results here</p>
+                    </div>
+                </div>
+                <div class="button-section">
+                    <button id="save-btn" class="btn-primary" disabled>💾 Save Excel</button>
+                    <span id="save-status" class="status-message"></span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+        </footer>
+    </div>
+
+    <script>
+        // Global variables to track URSP structure
+        let urspCount = 1;
+        
+        // Simple tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded - setting up functionality');
+            
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    console.log('Tab clicked:', targetTab);
+                    
+                    // Remove active class from all tabs and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const targetContent = document.getElementById(targetTab + '-tab');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+            
+            // URSP count change functionality
+            const urspCountInput = document.getElementById('ursp-count');
+            if (urspCountInput) {
+                urspCountInput.addEventListener('change', function() {
+                    const newCount = parseInt(this.value);
+                    console.log('URSP count changed to:', newCount);
+                    updateURSPCards(newCount);
+                });
+            }
+            
+            // Setup event delegation for dynamic RSD and Contents count changes
+            const container = document.getElementById('ursp-container');
+            if (container) {
+                container.addEventListener('change', function(event) {
+                    const target = event.target;
+                    console.log('Change event detected:', target.type, target.value);
+                    
+                    // Handle RSD count changes (in URSP fields)
+                    if (target.type === 'number' && target.closest('.ursp-fields')) {
+                        const urspCard = target.closest('.ursp-card');
+                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
+                        const newRSDCount = parseInt(target.value);
+                        console.log(`RSD count changed for URSP ${urspIndex} to:`, newRSDCount);
+                        updateRSDCards(urspIndex, newRSDCount);
+                    }
+                    
+                    // Handle Contents count changes (in RSD fields)
+                    else if (target.type === 'number' && target.closest('.rsd-fields')) {
+                        const rsdCard = target.closest('.rsd-card');
+                        const urspCard = target.closest('.ursp-card');
+                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
+                        const rsdIndex = parseInt(rsdCard.getAttribute('data-rsd-index'));
+                        const newContentsCount = parseInt(target.value);
+                        console.log(`Contents count changed for URSP ${urspIndex}, RSD ${rsdIndex} to:`, newContentsCount);
+                        updateContentsCards(urspIndex, rsdIndex, newContentsCount);
+                    }
+                });
+                
+                // Also handle select changes for TD Type and RSD Type
+                container.addEventListener('change', function(event) {
+                    const target = event.target;
+                    
+                    // Handle Traffic Descriptor Type changes
+                    if (target.tagName === 'SELECT' && target.closest('.ursp-fields')) {
+                        const urspCard = target.closest('.ursp-card');
+                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
+                        console.log(`TD Type changed for URSP ${urspIndex} to:`, target.value);
+                        handleTDTypeChange(urspIndex, target.value);
+                    }
+                    
+                    // Handle RSD Contents Type changes
+                    else if (target.tagName === 'SELECT' && target.closest('.rsd-contents-fields')) {
+                        const contentsCard = target.closest('.rsd-contents-card');
+                        const rsdCard = target.closest('.rsd-card');
+                        const urspCard = target.closest('.ursp-card');
+                        const urspIndex = parseInt(urspCard.getAttribute('data-ursp-index'));
+                        const rsdIndex = parseInt(rsdCard.getAttribute('data-rsd-index'));
+                        const contentsIndex = parseInt(contentsCard.getAttribute('data-contents-index'));
+                        console.log(`RSD Type changed for URSP ${urspIndex}, RSD ${rsdIndex}, Contents ${contentsIndex} to:`, target.value);
+                        handleRSDTypeChange(urspIndex, rsdIndex, contentsIndex, target.value);
+                    }
+                });
+            }
+            
+            // Encode button functionality
+            const encodeBtn = document.getElementById('encode-btn');
+            const encodeStatus = document.getElementById('encode-status');
+            if (encodeBtn) {
+                encodeBtn.addEventListener('click', async function() {
+                    console.log('Encode button clicked');
+                    encodeStatus.textContent = 'Encoding...';
+                    encodeStatus.className = 'status-message';
+                    
+                    try {
+                        // Collect data from form
+                        const data = collectFormData();
+                        console.log('Collected data:', data);
+                        
+                        const response = await fetch('/encode', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Encode result:', result);
+                        
+                        if (result.success) {
+                            encodeStatus.textContent = 'Encoding completed successfully!';
+                            encodeStatus.className = 'status-message success';
+                            
+                            // Display results in Result tab
+                            displayResults(result);
+                            
+                            // Switch to Result tab
+                            document.querySelector('[data-tab="result"]').click();
+                        } else {
+                            encodeStatus.textContent = 'Error: ' + result.error;
+                            encodeStatus.className = 'status-message error';
+                        }
+                    } catch (error) {
+                        console.error('Encode error:', error);
+                        encodeStatus.textContent = 'Network error: ' + error.message;
+                        encodeStatus.className = 'status-message error';
+                    }
+                });
+            }
+            
+            // Decode button functionality
+            const decodeBtn = document.getElementById('decode-btn');
+            const decodeStatus = document.getElementById('decode-status');
+            if (decodeBtn) {
+                decodeBtn.addEventListener('click', async function() {
+                    console.log('Decode button clicked');
+                    const logText = document.getElementById('log-text').value;
+                    
+                    if (!logText.trim()) {
+                        decodeStatus.textContent = 'Please enter hex log data';
+                        decodeStatus.className = 'status-message error';
+                        return;
+                    }
+                    
+                    decodeStatus.textContent = 'Decoding...';
+                    decodeStatus.className = 'status-message';
+                    
+                    try {
+                        const response = await fetch('/decode', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ log_text: logText })
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Decode result:', result);
+                        
+                        if (result.success) {
+                            decodeStatus.textContent = 'Decoding completed successfully!';
+                            decodeStatus.className = 'status-message success';
+                            
+                            if (result.message_type === 'DL NAS Transport') {
+                                // Display results in Result tab
+                                displayResults(result);
+                                
+                                // Switch to Result tab
+                                document.querySelector('[data-tab="result"]').click();
+                            } else {
+                                // Display info message
+                                const resultSections = document.getElementById('result-sections');
+                                if (resultSections) {
+                                    resultSections.innerHTML = '<div class="result-section-card"><div class="result-section-header">Decoding Result</div><div class="result-section-content"><div class="text-display">' + (result.info || result.usi_result || 'Decoding completed') + '</div></div></div>';
+                                }
+                                document.querySelector('[data-tab="result"]').click();
+                                
+                                // Enable save button if there's data to save
+                                const saveBtn = document.getElementById('save-btn');
+                                if (saveBtn && (result.info || result.usi_result)) {
+                                    saveBtn.disabled = false;
+                                }
+                            }
+                        } else {
+                            decodeStatus.textContent = 'Error: ' + result.error;
+                            decodeStatus.className = 'status-message error';
+                        }
+                    } catch (error) {
+                        console.error('Decode error:', error);
+                        decodeStatus.textContent = 'Network error: ' + error.message;
+                        decodeStatus.className = 'status-message error';
+                    }
+                });
+            }
+            
+            // Save button functionality
+            const saveBtn = document.getElementById('save-btn');
+            const saveStatus = document.getElementById('save-status');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', async function() {
+                    console.log('Save button clicked');
+                    saveStatus.textContent = 'Saving...';
+                    saveStatus.className = 'status-message';
+                    
+                    try {
+                        const response = await fetch('/save_excel', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Save result:', result);
+                        
+                        if (result.success) {
+                            saveStatus.textContent = `Saved: ${result.filename}`;
+                            saveStatus.className = 'status-message success';
+                        } else {
+                            saveStatus.textContent = 'Error: ' + result.error;
+                            saveStatus.className = 'status-message error';
+                        }
+                    } catch (error) {
+                        console.error('Save error:', error);
+                        saveStatus.textContent = 'Network error: ' + error.message;
+                        saveStatus.className = 'status-message error';
+                    }
+                });
+            }
+            
+            console.log('Basic functionality set up');
+        });
+        
+        // Function to update URSP cards based on count
+        function updateURSPCards(newCount) {
+            const container = document.getElementById('ursp-container');
+            if (!container) return;
+            
+            const currentCount = urspCount;
+            urspCount = newCount;
+            
+            if (newCount > currentCount) {
+                // Add new cards
+                for (let i = currentCount; i < newCount; i++) {
+                    const newCard = createURSPCard(i);
+                    container.appendChild(newCard);
+                }
+            } else if (newCount < currentCount) {
+                // Remove cards
+                const cards = container.querySelectorAll('.ursp-card');
+                for (let i = newCount; i < currentCount; i++) {
+                    if (cards[i]) {
+                        cards[i].remove();
+                    }
+                }
+            }
+        }
+        
+        // Function to update RSD cards within a URSP card
+        function updateRSDCards(urspIndex, newCount) {
+            const urspCard = document.querySelector(`[data-ursp-index="${urspIndex}"]`);
+            if (!urspCard) return;
+            
+            const rsdContainer = urspCard.querySelector('.rsd-container');
+            const currentRSDCards = rsdContainer.querySelectorAll('.rsd-card');
+            const currentCount = currentRSDCards.length;
+            
+            if (newCount > currentCount) {
+                // Add new RSD cards
+                for (let i = currentCount; i < newCount; i++) {
+                    const newRSDCard = createRSDCard(urspIndex, i);
+                    rsdContainer.appendChild(newRSDCard);
+                }
+            } else if (newCount < currentCount) {
+                // Remove RSD cards
+                for (let i = newCount; i < currentCount; i++) {
+                    if (currentRSDCards[i]) {
+                        currentRSDCards[i].remove();
+                    }
+                }
+            }
+        }
+        
+        // Function to update Contents cards within an RSD card
+        function updateContentsCards(urspIndex, rsdIndex, newCount) {
+            const rsdCard = document.querySelector(`[data-ursp-index="${urspIndex}"] [data-rsd-index="${rsdIndex}"]`);
+            if (!rsdCard) return;
+            
+            const contentsContainer = rsdCard.querySelector('.rsd-contents-container');
+            const currentContentsCards = contentsContainer.querySelectorAll('.rsd-contents-card');
+            const currentCount = currentContentsCards.length;
+            
+            if (newCount > currentCount) {
+                // Add new Contents cards
+                for (let i = currentCount; i < newCount; i++) {
+                    const newContentsCard = createContentsCard(urspIndex, rsdIndex, i);
+                    contentsContainer.appendChild(newContentsCard);
+                }
+            } else if (newCount < currentCount) {
+                // Remove Contents cards
+                for (let i = newCount; i < currentCount; i++) {
+                    if (currentContentsCards[i]) {
+                        currentContentsCards[i].remove();
+                    }
+                }
+            }
+        }
+        
+        // Function to create a new URSP card
+        function createURSPCard(index) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'ursp-card';
+            cardDiv.setAttribute('data-ursp-index', index);
+            cardDiv.innerHTML = createURSPCardHTML(index);
+            return cardDiv;
+        }
+        
+        // Function to create RSD card element
+        function createRSDCard(urspIndex, rsdIndex) {
+            const rsdDiv = document.createElement('div');
+            rsdDiv.className = 'rsd-card';
+            rsdDiv.setAttribute('data-rsd-index', rsdIndex);
+            rsdDiv.innerHTML = createRSDCardHTML(urspIndex, rsdIndex);
+            return rsdDiv;
+        }
+        
+        // Function to create Contents card element
+        function createContentsCard(urspIndex, rsdIndex, contentsIndex) {
+            const contentsDiv = document.createElement('div');
+            contentsDiv.className = 'rsd-contents-card';
+            contentsDiv.setAttribute('data-contents-index', contentsIndex);
+            contentsDiv.innerHTML = createContentsCardHTML(urspIndex, rsdIndex, contentsIndex);
+            return contentsDiv;
+        }
+        
+        // Function to create URSP card HTML with proper event handlers
+        function createURSPCardHTML(index) {
+            const precedenceValue = getNextPrecedenceValue('ursp');
+            return `
+                <div class="ursp-card-header">URSP Rule ${index}</div>
+                <div class="ursp-fields">
+                    <div class="field-group">
+                        <label>URSP Number</label>
+                        <input type="text" value="URSP_${index}" disabled>
+                    </div>
+                    <div class="field-group">
+                        <label>Precedence Value</label>
+                        <input type="text" value="${precedenceValue}" placeholder="Enter value">
+                    </div>
+                    <div class="field-group">
+                        <label>Traffic Descriptor Type</label>
+                        <select>
+                            <option value="Match-all" selected>Match-all</option>
+                            <option value="OS Id + OS App Id">OS Id + OS App Id</option>
+                            <option value="DNN">DNN</option>
+                            <option value="Connection capabilities">Connection capabilities</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Traffic Descriptor Value</label>
+                        <input type="text" value="-" disabled class="td-value-input">
+                    </div>
+                    <div class="field-group">
+                        <label>RSD Count</label>
+                        <input type="number" value="1" min="1" max="5">
+                    </div>
+                </div>
+                
+                <div class="rsd-container">
+                    ${createRSDCardHTML(index, 0)}
+                </div>
+            `;
+        }
+        
+        // Function to create RSD card HTML with proper event handlers
+        function createRSDCardHTML(urspIndex, rsdIndex) {
+            const precedenceValue = getNextPrecedenceValue('rsd', urspIndex);
+            return `
+                <div class="rsd-card" data-rsd-index="${rsdIndex}">
+                    <div class="rsd-card-header">RSD ${urspIndex}_${rsdIndex}</div>
+                    <div class="rsd-fields">
+                        <div class="field-group">
+                            <label>Precedence Value</label>
+                            <input type="text" value="${precedenceValue}" placeholder="Enter value">
+                        </div>
+                        <div class="field-group">
+                            <label>Contents Count</label>
+                            <input type="number" value="1" min="1" max="5">
+                        </div>
+                    </div>
+                    
+                    <div class="rsd-contents-container">
+                        ${createContentsCardHTML(urspIndex, rsdIndex, 0)}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Function to create Contents card HTML with proper event handlers
+        function createContentsCardHTML(urspIndex, rsdIndex, contentsIndex) {
+            return `
+                <div class="rsd-contents-card" data-contents-index="${contentsIndex}">
+                    <div class="rsd-contents-header">RSD Contents ${urspIndex}_${rsdIndex}_${contentsIndex}</div>
+                    <div class="rsd-contents-fields">
+                        <div class="field-group">
+                            <label>Type</label>
+                            <select>
+                                <option value="SSC mode" selected>SSC mode</option>
+                                <option value="S-NSSAI">S-NSSAI</option>
+                                <option value="DNN">DNN</option>
+                                <option value="Access type">Access type</option>
+                                <option value="Multi-access preference">Multi-access preference</option>
+                                <option value="Non-seamless non-3GPP offload indication">Non-seamless non-3GPP offload indication</option>
+                                <option value="5G ProSe layer-3 UE-to-network relay offload indication">5G ProSe layer-3 UE-to-network relay offload indication</option>
+                                <option value="PDU session type">PDU session type</option>
+                                <option value="Preferred access type">Preferred access type</option>
+                                <option value="PDU session pair ID">PDU session pair ID</option>
+                                <option value="RSN">RSN</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label>Value</label>
+                            <input type="text" value="" placeholder="Enter value" class="rsd-value-input">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Handle Traffic Descriptor Type change (like PyQt td_type_changed)
+        function handleTDTypeChange(urspIndex, selectedType) {
+            const urspCard = document.querySelector(`[data-ursp-index="${urspIndex}"]`);
+            if (!urspCard) return;
+            
+            const valueInput = urspCard.querySelector('.td-value-input');
+            
+            if (selectedType !== 'Match-all') {
+                valueInput.disabled = false;
+                valueInput.value = '';
+                
+                if (selectedType === 'OS Id + OS App Id') {
+                    valueInput.value = 'Android/OS_APP_Id';
+                } else if (selectedType === 'Connection capabilities') {
+                    valueInput.value = 'IMS, MMS, SUPL, Internet';
+                }
+            } else {
+                valueInput.disabled = true;
+                valueInput.value = '-';
+            }
+        }
+        
+        // Function to get next available precedence value in the same section
+        function getNextPrecedenceValue(sectionType, parentIndex, subIndex = null) {
+            const usedValues = new Set();
+            
+            if (sectionType === 'ursp') {
+                // Get all URSP precedence values
+                const urspCards = document.querySelectorAll('.ursp-card');
+                urspCards.forEach(card => {
+                    const pvInput = card.querySelector('.ursp-fields input[placeholder="Enter value"]');
+                    if (pvInput && pvInput.value && !isNaN(pvInput.value)) {
+                        usedValues.add(parseInt(pvInput.value));
+                    }
+                });
+            } else if (sectionType === 'rsd') {
+                // Get all RSD precedence values within the same URSP
+                const urspCard = document.querySelector(`[data-ursp-index="${parentIndex}"]`);
+                if (urspCard) {
+                    const rsdCards = urspCard.querySelectorAll('.rsd-card');
+                    rsdCards.forEach(card => {
+                        const pvInput = card.querySelector('.rsd-fields input[placeholder="Enter value"]');
+                        if (pvInput && pvInput.value && !isNaN(pvInput.value)) {
+                            usedValues.add(parseInt(pvInput.value));
+                        }
+                    });
+                }
+            }
+            
+            // Find next available value starting from 1
+            let nextValue = 1;
+            while (usedValues.has(nextValue)) {
+                nextValue++;
+            }
+            
+            return nextValue.toString();
+        }
+        
+        // Function to update precedence values when cards are added
+        function updatePrecedenceValues() {
+            // Update URSP precedence values
+            const urspCards = document.querySelectorAll('.ursp-card');
+            urspCards.forEach((card, index) => {
+                const pvInput = card.querySelector('.ursp-fields input[placeholder="Enter value"]');
+                if (pvInput && !pvInput.value) {
+                    pvInput.value = getNextPrecedenceValue('ursp');
+                }
+            });
+            
+            // Update RSD precedence values
+            urspCards.forEach((urspCard, urspIndex) => {
+                const rsdCards = urspCard.querySelectorAll('.rsd-card');
+                rsdCards.forEach((rsdCard, rsdIndex) => {
+                    const pvInput = rsdCard.querySelector('.rsd-fields input[placeholder="Enter value"]');
+                    if (pvInput && !pvInput.value) {
+                        pvInput.value = getNextPrecedenceValue('rsd', urspIndex);
+                    }
+                });
+            });
+        }
+        function handleRSDTypeChange(urspIndex, rsdIndex, contentsIndex, selectedType) {
+            const contentsCard = document.querySelector(`[data-ursp-index="${urspIndex}"] [data-rsd-index="${rsdIndex}"] [data-contents-index="${contentsIndex}"]`);
+            if (!contentsCard) return;
+            
+            const valueInput = contentsCard.querySelector('.rsd-value-input');
+            
+            // rsd_zero types (from spec.py) - these should have disabled value field
+            const rsdZeroTypes = [
+                "Multi-access preference", 
+                "Non-seamless non-3GPP offload indication",
+                "5G ProSe layer-3 UE-to-network relay offload indication"
+            ];
+            
+            // rsd_one types (from spec.py) - these should have enabled value field
+            const rsdOneTypes = [
+                "SSC mode",
+                "PDU session type", 
+                "Preferred access type", 
+                "PDU session pair ID", 
+                "RSN"
+            ];
+            
+            if (rsdZeroTypes.includes(selectedType)) {
+                valueInput.disabled = true;
+                valueInput.value = '-';
+            } else {
+                valueInput.disabled = false;
+                valueInput.value = '';
+                
+                if (selectedType === 'S-NSSAI') {
+                    valueInput.value = 'SST 1 + SD 1';
+                }
+                // For rsd_one types, leave empty for user input
+                // For other types (like DNN), also leave empty for user input
+            }
+        }
+        
+        // Function to collect form data (like PyQt implementation)
+        function collectFormData() {
+            const data = {
+                pti: document.getElementById('pti')?.value || '',
+                plmn: document.getElementById('plmn')?.value || '',
+                upsc: document.getElementById('upsc')?.value || '',
+                ursp_sum: [],
+                rsd_sum: [],
+                rsd_conts: []
+            };
+            
+            // Collect URSP data
+            const urspCards = document.querySelectorAll('.ursp-card');
+            console.log('Found URSP cards:', urspCards.length);
+            
+            urspCards.forEach((urspCard, urspIndex) => {
+                const urspData = [];
+                
+                try {
+                    // URSP Number
+                    const urspNumInput = urspCard.querySelector('.ursp-fields input[disabled]');
+                    const urspNum = urspNumInput ? urspNumInput.value : `URSP_${urspIndex}`;
+                    urspData.push(urspNum);
+                    
+                    // Precedence Value
+                    const urspPvInput = urspCard.querySelector('.ursp-fields input[placeholder="Enter value"]');
+                    const urspPv = urspPvInput ? urspPvInput.value : '';
+                    urspData.push(urspPv);
+                    
+                    // Traffic Descriptor Type
+                    const tdTypeSelect = urspCard.querySelector('.ursp-fields select');
+                    const tdType = tdTypeSelect ? tdTypeSelect.value : 'Match-all';
+                    urspData.push(tdType);
+                    
+                    // Traffic Descriptor Value
+                    const tdValInput = urspCard.querySelector('.td-value-input');
+                    const tdVal = tdValInput ? tdValInput.value : '-';
+                    urspData.push(tdVal);
+                    
+                    // RSD Count (as number, not string)
+                    const rsdCountInput = urspCard.querySelector('.ursp-fields input[type="number"]');
+                    const rsdCount = rsdCountInput ? parseInt(rsdCountInput.value) : 1;
+                    urspData.push(rsdCount);
+                    
+                    data.ursp_sum.push(urspData);
+                    console.log(`URSP ${urspIndex} data:`, urspData);
+                    
+                    // Collect RSD data for this URSP
+                    const rsdData = [];
+                    const rsdCards = urspCard.querySelectorAll('.rsd-card');
+                    console.log(`Found RSD cards for URSP ${urspIndex}:`, rsdCards.length);
+                    
+                    rsdCards.forEach((rsdCard, rsdIndex) => {
+                        const rsdSubData = [];
+                        
+                        try {
+                            // RSD Number
+                            const rsdNumInput = rsdCard.querySelector('.rsd-fields input[disabled]');
+                            const rsdNum = rsdNumInput ? rsdNumInput.value : `RSD_${urspIndex}_${rsdIndex}`;
+                            rsdSubData.push(rsdNum);
+                            
+                            // RSD Precedence Value
+                            const rsdPvInput = rsdCard.querySelector('.rsd-fields input[placeholder="Enter value"]');
+                            const rsdPv = rsdPvInput ? rsdPvInput.value : '';
+                            rsdSubData.push(rsdPv);
+                            
+                            // Contents Count (as number, not string)
+                            const contentsCountInput = rsdCard.querySelector('.rsd-fields input[type="number"]');
+                            const contentsCount = contentsCountInput ? parseInt(contentsCountInput.value) : 1;
+                            rsdSubData.push(contentsCount);
+                            
+                            rsdData.push(rsdSubData);
+                            console.log(`RSD ${urspIndex}_${rsdIndex} data:`, rsdSubData);
+                        } catch (error) {
+                            console.error(`Error collecting RSD ${urspIndex}_${rsdIndex} data:`, error);
+                            // Add default RSD data
+                            rsdData.push([`RSD_${urspIndex}_${rsdIndex}`, '', 1]);
+                        }
+                    });
+                    data.rsd_sum.push(rsdData);
+                    
+                    // Collect RSD Contents data for this URSP
+                    const rsdContentsData = [];
+                    rsdCards.forEach((rsdCard, rsdIndex) => {
+                        const contentsData = [];
+                        const contentsCards = rsdCard.querySelectorAll('.rsd-contents-card');
+                        console.log(`Found Contents cards for RSD ${urspIndex}_${rsdIndex}:`, contentsCards.length);
+                        
+                        contentsCards.forEach((contentsCard, contentsIndex) => {
+                            const contentsSubData = [];
+                            
+                            try {
+                                // Contents Number
+                                const contentsNumInput = contentsCard.querySelector('.rsd-contents-fields input[disabled]');
+                                const contentsNum = contentsNumInput ? contentsNumInput.value : `RSD_${urspIndex}_${rsdIndex}_${contentsIndex}`;
+                                contentsSubData.push(contentsNum);
+                                
+                                // Contents Type
+                                const contentsTypeSelect = contentsCard.querySelector('.rsd-contents-fields select');
+                                const contentsType = contentsTypeSelect ? contentsTypeSelect.value : 'SSC mode';
+                                contentsSubData.push(contentsType);
+                                
+                                // Contents Value
+                                const contentsValInput = contentsCard.querySelector('.rsd-value-input');
+                                const contentsVal = contentsValInput ? contentsValInput.value : '-';
+                                contentsSubData.push(contentsVal);
+                                
+                                contentsData.push(contentsSubData);
+                                console.log(`Contents ${urspIndex}_${rsdIndex}_${contentsIndex} data:`, contentsSubData);
+                            } catch (error) {
+                                console.error(`Error collecting Contents ${urspIndex}_${rsdIndex}_${contentsIndex} data:`, error);
+                                // Add default Contents data
+                                contentsData.push([`RSD_${urspIndex}_${rsdIndex}_${contentsIndex}`, 'SSC mode', '-']);
+                            }
+                        });
+                        rsdContentsData.push(contentsData);
+                    });
+                    data.rsd_conts.push(rsdContentsData);
+                    
+                } catch (error) {
+                    console.error(`Error collecting URSP ${urspIndex} data:`, error);
+                    // Add default URSP data
+                    data.ursp_sum.push([`URSP_${urspIndex}`, '', 'Match-all', '-', 1]);
+                    data.rsd_sum.push([[`RSD_${urspIndex}_0`, '', 1]]);
+                    data.rsd_conts.push([[[`RSD_${urspIndex}_0_0`, 'SSC mode', '-']]]);
+                }
+            });
+            
+            console.log('Final collected data:', data);
+            return data;
+        }
+        
+        // Function to display results (like PyQt rst_show)
+        function displayResults(result) {
+            const resultSections = document.getElementById('result-sections');
+            const saveBtn = document.getElementById('save-btn');
+            
+            if (!resultSections) {
+                console.error('result-sections element not found');
+                return;
+            }
+            
+            let output = '';
+            const line = '─'.repeat(214);
+            
+            if (result.ef_ursp) {
+                output += '<div class="result-section-card">';
+                output += '<div class="result-section-header ef-ursp">SIM EF_URSP</div>';
+                output += '<div class="result-section-content">';
+                output += '<div class="hex-display">' + result.ef_ursp + '</div>';
+                output += '</div></div>';
+            }
+            
+            if (result.dl_nas) {
+                output += '<div class="result-section-card">';
+                output += '<div class="result-section-header dl-nas">DL NAS TRANSPORT</div>';
+                output += '<div class="result-section-content">';
+                output += '<div class="hex-display">' + result.dl_nas + '</div>';
+                output += '<div class="result-divider"></div>';
+                output += '</div></div>';
+            }
+            
+            if (result.ursp_info) {
+                output += '<div class="result-section-card">';
+                output += '<div class="result-section-header ursp-rule">URSP RULE</div>';
+                output += '<div class="result-section-content">';
+                output += '<div class="text-display">' + result.ursp_info + '\n\n' + result.ursp_conts + '</div>';
+                output += '<div class="result-divider"></div>';
+                output += '</div></div>';
+            }
+            
+            if (result.pol_cmd_txt) {
+                output += '<div class="result-section-card">';
+                output += '<div class="result-section-header policy-command">MANAGE UE POLICY COMMAND</div>';
+                output += '<div class="result-section-content">';
+                output += '<div class="text-display">' + result.pol_cmd_txt + '</div>';
+                output += '</div></div>';
+            }
+            
+            resultSections.innerHTML = output;
+            if (saveBtn) {
+                saveBtn.disabled = false;
+            }
+        }
+        
+        // Function to format hex display (similar to PyQt display.hex_format)
+        function formatHexDisplay(hexString) {
+            if (!hexString) return '';
+            
+            // Remove spaces and format as hex dump
+            const cleanHex = hexString.replace(/\s+/g, '');
+            let formatted = '';
+            
+            for (let i = 0; i < cleanHex.length; i += 32) {
+                const line = cleanHex.substr(i, 32);
+                const address = (i / 2).toString(16).padStart(4, '0').toUpperCase();
+                
+                let hexPart = '';
+                for (let j = 0; j < line.length; j += 2) {
+                    hexPart += line.substr(j, 2) + ' ';
+                }
+                
+                formatted += `${address}   ${hexPart.trim()}\n`;
+            }
+            
+            return formatted;
+        }
+    </script>
+</body>
+</html>
