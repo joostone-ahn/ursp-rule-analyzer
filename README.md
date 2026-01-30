@@ -68,7 +68,7 @@ If you want to modify the code or run from source:
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/joostone-ahn/ursp-rule-analyzer.git
 cd ursp-rule-analyzer
 
 # Create virtual environment
@@ -209,17 +209,17 @@ src/
 ┌──────────────▼──────────────────────────────┐
 │       Core Processing Pipeline              │
 │                                             │
-│  encoder.py  → URSP Rule Encoding          │
-│  decoder.py  → Protocol Analysis           │
-│  display.py  → Result Formatting           │
-│  spec.py     → 3GPP Standards Reference    │
+│  encoder.py  → URSP Rule Encoding           │
+│  decoder.py  → Protocol Analysis            │
+│  display.py  → Result Formatting            │
+│  spec.py     → 3GPP Standards Reference     │
 └──────────────┬──────────────────────────────┘
                │
 ┌──────────────▼──────────────────────────────┐
 │         Output Generation                   │
-│  • xlsx/ - Excel files                     │
-│  • Hex-formatted results                   │
-│  • Structured text output                  │
+│  • xlsx/ - Excel files                      │
+│  • Hex-formatted results                    │
+│  • Structured text output                   │
 └─────────────────────────────────────────────┘
 ```
 
