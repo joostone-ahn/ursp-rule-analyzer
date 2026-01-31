@@ -198,7 +198,7 @@ src/
 - [TS 23.503](https://www.3gpp.org/ftp/Specs/archive/23_series/23.503/) - Policy and Charging Control Framework
 
 ---
-gi
+
 ## 👤 Author
 
 **JUSEOK AHN (안주석)**  
