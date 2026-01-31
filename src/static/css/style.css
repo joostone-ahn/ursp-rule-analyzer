@@ -1049,6 +1049,7 @@ footer {
     transition: background-color 0.2s;
     font-size: 12px;
     border-bottom: 1px solid #f3f4f6;
+    justify-content: flex-start;
 }
 
 .capability-checkbox:last-child {
@@ -1062,9 +1063,12 @@ footer {
 .capability-checkbox input[type="checkbox"] {
     margin: 0;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .capability-checkbox span {
     user-select: none;
     line-height: 1.2;
+    text-align: left;
+    flex: 1;
 }

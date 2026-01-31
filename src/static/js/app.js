@@ -236,24 +236,13 @@ function updateURSPValue(urspIndex, field, value) {
     console.log('Updated URSP:', urspSum[urspIndex]);
 }
 
-// Connection Capabilities 옵션 정의 (3GPP 표준에 따라)
+// Connection Capabilities 옵션 정의 (3GPP 표준에 따라 - LPP까지만)
 const connectionCapabilities = {
     'IMS': '01',
     'MMS': '02', 
     'SUPL': '04',
     'Internet': '08',
-    'LCS user plane positioning (LPP)': '10',
-    'IoT delay-tolerant': 'A1',
-    'IoT non-delay-tolerant': 'A2',
-    'Downlink streaming': 'A3',
-    'Uplink streaming': 'A4',
-    'Vehicular communications': 'A5',
-    'Real time interactive': 'A6',
-    'Unified communications': 'A7',
-    'Background': 'A8',
-    'Mission critical communications': 'A9',
-    'Time critical communications': 'AA',
-    'Low latency loss tolerant communications in un-acknowledged mode': 'AB'
+    'LCS user plane positioning (LPP)': '10'
 };
 
 // Connection Capabilities 드롭다운 HTML 생성 함수
@@ -276,7 +265,7 @@ function createConnectionCapabilitiesDropdown(urspIndex, currentValue) {
     return `
         <div class="connection-capabilities-selector">
             <button type="button" class="capabilities-toggle-btn" onclick="toggleConnectionCapabilities(${urspIndex})">
-                ▼ Select Capabilities <span class="capabilities-count">(${selectedCount} selected)</span>
+                ▼ Capabilities <span class="capabilities-count">(${selectedCount} selected)</span>
             </button>
             <div class="connection-capabilities-dropdown" style="display: none;">
                 ${checkboxesHTML}
@@ -297,7 +286,7 @@ function toggleConnectionCapabilities(urspIndex) {
     // 버튼 텍스트에서 카운트 부분만 유지하고 화살표만 변경
     const countSpan = toggleBtn.querySelector('.capabilities-count');
     const countText = countSpan ? countSpan.outerHTML : '';
-    toggleBtn.innerHTML = `${isVisible ? '▼' : '▲'} ${isVisible ? 'Select' : 'Hide'} Capabilities ${countText}`;
+    toggleBtn.innerHTML = `${isVisible ? '▼' : '▲'} Capabilities ${countText}`;
 }
 
 // Connection Capabilities 선택 변경 처리
