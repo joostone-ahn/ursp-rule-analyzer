@@ -80,24 +80,7 @@ function createURSPCard(urspIndex) {
                     ${ursp.td_type === 'Match-all' ? 
                         `<input type="text" value="${ursp.td_val}" disabled class="td-value-input">` :
                         ursp.td_type === 'Connection capabilities' ?
-                        `<div class="connection-capabilities-selector">
-                            <button type="button" class="capabilities-toggle-btn" onclick="toggleConnectionCapabilities(${urspIndex})">
-                                ▼ Select Capabilities <span class="capabilities-count">(${ursp.td_val.split(', ').filter(v => v && v !== 'None selected').length} selected)</span>
-                            </button>
-                            <div class="connection-capabilities-dropdown" style="display: none;">
-                                ${Object.keys(connectionCapabilities).map(capability => {
-                                    const currentValues = ursp.td_val.split(', ');
-                                    const isChecked = currentValues.includes(capability) ? 'checked' : '';
-                                    return `
-                                        <label class="capability-checkbox">
-                                            <input type="checkbox" value="${capability}" ${isChecked} 
-                                                   onchange="updateConnectionCapabilitiesSelection(${urspIndex})">
-                                            <span>${capability}</span>
-                                        </label>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>` :
+                        createConnectionCapabilitiesDropdown(urspIndex, ursp.td_val) :
                         `<input type="text" value="${ursp.td_val}" 
                                onchange="updateURSPValue(${urspIndex}, 'td_val', this.value)" class="td-value-input">`
                     }
@@ -273,14 +256,48 @@ const connectionCapabilities = {
     'Low latency loss tolerant communications in un-acknowledged mode': 'AB'
 };
 
+// Connection Capabilities 드롭다운 HTML 생성 함수
+function createConnectionCapabilitiesDropdown(urspIndex, currentValue) {
+    const currentValues = currentValue.split(', ').filter(v => v && v !== 'None selected');
+    const selectedCount = currentValues.length;
+    
+    let checkboxesHTML = '';
+    Object.keys(connectionCapabilities).forEach(capability => {
+        const isChecked = currentValues.includes(capability) ? 'checked' : '';
+        checkboxesHTML += `
+            <label class="capability-checkbox">
+                <input type="checkbox" value="${capability}" ${isChecked} 
+                       onchange="updateConnectionCapabilitiesSelection(${urspIndex})">
+                <span>${capability}</span>
+            </label>
+        `;
+    });
+    
+    return `
+        <div class="connection-capabilities-selector">
+            <button type="button" class="capabilities-toggle-btn" onclick="toggleConnectionCapabilities(${urspIndex})">
+                ▼ Select Capabilities <span class="capabilities-count">(${selectedCount} selected)</span>
+            </button>
+            <div class="connection-capabilities-dropdown" style="display: none;">
+                ${checkboxesHTML}
+            </div>
+        </div>
+    `;
+}
 // Connection Capabilities 토글 함수
 function toggleConnectionCapabilities(urspIndex) {
     const container = document.querySelector(`[data-ursp-index="${urspIndex}"] .connection-capabilities-dropdown`);
+    const toggleBtn = document.querySelector(`[data-ursp-index="${urspIndex}"] .capabilities-toggle-btn`);
+    
+    if (!container || !toggleBtn) return;
+    
     const isVisible = container.style.display !== 'none';
     container.style.display = isVisible ? 'none' : 'block';
     
-    const toggleBtn = document.querySelector(`[data-ursp-index="${urspIndex}"] .capabilities-toggle-btn`);
-    toggleBtn.textContent = isVisible ? '▼ Select Capabilities' : '▲ Hide Capabilities';
+    // 버튼 텍스트에서 카운트 부분만 유지하고 화살표만 변경
+    const countSpan = toggleBtn.querySelector('.capabilities-count');
+    const countText = countSpan ? countSpan.outerHTML : '';
+    toggleBtn.innerHTML = `${isVisible ? '▼' : '▲'} ${isVisible ? 'Select' : 'Hide'} Capabilities ${countText}`;
 }
 
 // Connection Capabilities 선택 변경 처리
@@ -312,13 +329,6 @@ function updateTDType(urspIndex, value) {
         urspSum[urspIndex].td_val = '-';
     } else if (value === 'OS Id + OS App Id') {
         urspSum[urspIndex].td_val = 'Android/OS_APP_Id';
-    } else if (value === 'Connection capabilities') {
-        urspSum[urspIndex].td_val = 'IMS, MMS, SUPL, Internet';
-    } else {
-        urspSum[urspIndex].td_val = '';
-    }
-    renderURSPCards();
-}
     } else if (value === 'Connection capabilities') {
         urspSum[urspIndex].td_val = 'IMS, MMS, SUPL, Internet';
     } else {
