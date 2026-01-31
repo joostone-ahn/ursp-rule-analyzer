@@ -194,11 +194,11 @@ src/
 ### 3GPP Standards
 - [TS 24.526](https://www.3gpp.org/ftp/Specs/archive/24_series/24.526/) - UE Policy Container (URSP)
 - [TS 24.501](https://www.3gpp.org/ftp/Specs/archive/24_series/24.501/) - NAS Signaling Procedures
-- [TS 31.121](https://www.3gpp.org/ftp/Specs/archive/31_series/31.121/) - EF_URSP File Format in UICC
+- [TS 31.102](https://www.3gpp.org/ftp/Specs/archive/31_series/31.102/) - EF_URSP File Format in USIM Application
 - [TS 23.503](https://www.3gpp.org/ftp/Specs/archive/23_series/23.503/) - Policy and Charging Control Framework
 
 ---
-
+gi
 ## 👤 Author
 
 **JUSEOK AHN (안주석)**  
