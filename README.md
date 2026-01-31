@@ -95,7 +95,7 @@ Use this when you need to generate hex data for SIM card provisioning or create 
 3. **Set Route Selection**: Configure route selection descriptors (RSD) by adjusting "RSD Count" and "RSD Type Count" within each rule: SSC mode, S-NSSAI, DNN, Access type, Multi-access preference, etc.
 4. **Generate Output**: Click **🚀 Encoding** to create hex data and protocol messages
 
-**Dynamic Rule Management**: Adjust count values to add/remove rules dynamically. Precedence values are automatically assigned to avoid conflicts.
+**Dynamic Rule Management**: Adjust count values to add/remove rules dynamically. Precedence values are automatically assigned to avoid conflicts and can be manually edited as needed.
 
 ### Decoder Tab - Analyzing Existing Data
 
