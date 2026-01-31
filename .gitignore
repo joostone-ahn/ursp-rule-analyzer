@@ -55,6 +55,7 @@ instance/
 xlsx/
 uploads/*
 !uploads/.gitkeep
+spec/
 
 # Logs
 *.log
