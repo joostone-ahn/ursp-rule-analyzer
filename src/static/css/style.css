@@ -995,32 +995,68 @@ footer {
     flex-direction: column;
     gap: 8px;
 }
-/* Connection Capabilities 체크박스 스타일 */
-.connection-capabilities-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 8px;
-    padding: 10px;
+/* Connection Capabilities 접이식 선택기 스타일 */
+.connection-capabilities-selector {
+    position: relative;
+}
+
+.capabilities-toggle-btn {
+    width: 100%;
+    padding: 8px 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     background: #f9fafb;
-    max-height: 200px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.capabilities-toggle-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.capabilities-count {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: normal;
+}
+
+.connection-capabilities-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    max-height: 250px;
     overflow-y: auto;
+    margin-top: 2px;
 }
 
 .capability-checkbox {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 8px;
-    border-radius: 4px;
+    padding: 8px 12px;
     cursor: pointer;
     transition: background-color 0.2s;
     font-size: 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.capability-checkbox:last-child {
+    border-bottom: none;
 }
 
 .capability-checkbox:hover {
-    background-color: #e5e7eb;
+    background-color: #f9fafb;
 }
 
 .capability-checkbox input[type="checkbox"] {

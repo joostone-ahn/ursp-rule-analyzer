@@ -77,7 +77,30 @@ function createURSPCard(urspIndex) {
                 </div>
                 <div class="field-group">
                     <label>Traffic Descriptor Value</label>
-                    ${createTDValueField(urspIndex, ursp)}
+                    ${ursp.td_type === 'Match-all' ? 
+                        `<input type="text" value="${ursp.td_val}" disabled class="td-value-input">` :
+                        ursp.td_type === 'Connection capabilities' ?
+                        `<div class="connection-capabilities-selector">
+                            <button type="button" class="capabilities-toggle-btn" onclick="toggleConnectionCapabilities(${urspIndex})">
+                                ▼ Select Capabilities <span class="capabilities-count">(${ursp.td_val.split(', ').filter(v => v && v !== 'None selected').length} selected)</span>
+                            </button>
+                            <div class="connection-capabilities-dropdown" style="display: none;">
+                                ${Object.keys(connectionCapabilities).map(capability => {
+                                    const currentValues = ursp.td_val.split(', ');
+                                    const isChecked = currentValues.includes(capability) ? 'checked' : '';
+                                    return `
+                                        <label class="capability-checkbox">
+                                            <input type="checkbox" value="${capability}" ${isChecked} 
+                                                   onchange="updateConnectionCapabilitiesSelection(${urspIndex})">
+                                            <span>${capability}</span>
+                                        </label>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>` :
+                        `<input type="text" value="${ursp.td_val}" 
+                               onchange="updateURSPValue(${urspIndex}, 'td_val', this.value)" class="td-value-input">`
+                    }
                 </div>
                 <div class="field-group">
                     <label>RSD Count</label>
@@ -236,7 +259,7 @@ const connectionCapabilities = {
     'MMS': '02', 
     'SUPL': '04',
     'Internet': '08',
-    'LCS user plane positioning': '10',
+    'LCS user plane positioning (LPP)': '10',
     'IoT delay-tolerant': 'A1',
     'IoT non-delay-tolerant': 'A2',
     'Downlink streaming': 'A3',
@@ -250,64 +273,37 @@ const connectionCapabilities = {
     'Low latency loss tolerant communications in un-acknowledged mode': 'AB'
 };
 
-// Traffic Descriptor Value 필드를 동적으로 생성하는 함수
-function createTDValueField(urspIndex, ursp) {
-    if (ursp.td_type === 'Match-all') {
-        return `<input type="text" value="${ursp.td_val}" disabled class="td-value-input">`;
-    } else if (ursp.td_type === 'Connection capabilities') {
-        // Connection Capabilities의 경우 다중 선택 체크박스 생성
-        const currentValues = ursp.td_val.split(', ');
-        let checkboxes = '<div class="connection-capabilities-container">';
-        
-        Object.keys(connectionCapabilities).forEach(capability => {
-            const isChecked = currentValues.includes(capability) ? 'checked' : '';
-            checkboxes += `
-                <label class="capability-checkbox">
-                    <input type="checkbox" value="${capability}" ${isChecked} 
-                           onchange="updateConnectionCapabilitiesSelection(${urspIndex})">
-                    <span>${capability}</span>
-                </label>
-            `;
-        });
-        
-        checkboxes += '</div>';
-        return checkboxes;
-    } else {
-        return `<input type="text" value="${ursp.td_val}" 
-                       onchange="updateURSPValue(${urspIndex}, 'td_val', this.value)" class="td-value-input">`;
-    }
+// Connection Capabilities 토글 함수
+function toggleConnectionCapabilities(urspIndex) {
+    const container = document.querySelector(`[data-ursp-index="${urspIndex}"] .connection-capabilities-dropdown`);
+    const isVisible = container.style.display !== 'none';
+    container.style.display = isVisible ? 'none' : 'block';
+    
+    const toggleBtn = document.querySelector(`[data-ursp-index="${urspIndex}"] .capabilities-toggle-btn`);
+    toggleBtn.textContent = isVisible ? '▼ Select Capabilities' : '▲ Hide Capabilities';
 }
 
 // Connection Capabilities 선택 변경 처리
 function updateConnectionCapabilitiesSelection(urspIndex) {
-    const container = document.querySelector(`[data-ursp-index="${urspIndex}"] .connection-capabilities-container`);
+    const container = document.querySelector(`[data-ursp-index="${urspIndex}"] .connection-capabilities-dropdown`);
     const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
     
     const selectedCapabilities = Array.from(checkboxes).map(cb => cb.value);
     const capabilitiesString = selectedCapabilities.join(', ');
     
-    updateConnectionCapabilities(urspIndex, capabilitiesString);
+    // URSP 데이터 업데이트
+    urspSum[urspIndex].td_val = capabilitiesString || 'None selected';
+    
+    // 선택된 항목 수 표시
+    const countDisplay = document.querySelector(`[data-ursp-index="${urspIndex}"] .capabilities-count`);
+    countDisplay.textContent = `(${selectedCapabilities.length} selected)`;
+    
+    console.log(`Connection Capabilities: ${capabilitiesString}`);
 }
-function updateConnectionCapabilities(urspIndex, selectedCapabilities) {
-    // 선택된 capabilities를 배열로 변환
-    const capabilities = selectedCapabilities.split(', ');
-    
-    // 각 capability에 대한 hex 값을 계산
-    let hexValues = [];
-    capabilities.forEach(cap => {
-        if (connectionCapabilities[cap]) {
-            hexValues.push(connectionCapabilities[cap]);
-        }
-    });
-    
-    // 개수(1바이트) + hex 값들을 조합
-    const count = hexValues.length.toString(16).padStart(2, '0').toUpperCase();
-    const hexString = count + hexValues.join('');
-    
-    urspSum[urspIndex].td_val = selectedCapabilities;
-    urspSum[urspIndex].td_val_hex = hexString; // hex 값도 저장
-    
-    console.log(`Connection Capabilities: ${selectedCapabilities} -> ${hexString}`);
+
+function updateURSPValue(urspIndex, field, value) {
+    urspSum[urspIndex][field] = value;
+    console.log('Updated URSP:', urspSum[urspIndex]);
 }
 
 function updateTDType(urspIndex, value) {
@@ -317,7 +313,13 @@ function updateTDType(urspIndex, value) {
     } else if (value === 'OS Id + OS App Id') {
         urspSum[urspIndex].td_val = 'Android/OS_APP_Id';
     } else if (value === 'Connection capabilities') {
-        // Connection capabilities의 경우 기본값으로 IMS, MMS, SUPL, Internet 설정
+        urspSum[urspIndex].td_val = 'IMS, MMS, SUPL, Internet';
+    } else {
+        urspSum[urspIndex].td_val = '';
+    }
+    renderURSPCards();
+}
+    } else if (value === 'Connection capabilities') {
         urspSum[urspIndex].td_val = 'IMS, MMS, SUPL, Internet';
     } else {
         urspSum[urspIndex].td_val = '';
