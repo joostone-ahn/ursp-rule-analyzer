@@ -236,13 +236,12 @@ function updateURSPValue(urspIndex, field, value) {
     console.log('Updated URSP:', urspSum[urspIndex]);
 }
 
-// Connection Capabilities 옵션 정의 (3GPP 표준에 따라 - LPP까지만)
+// Connection Capabilities 옵션 정의 (3GPP 표준 기본 옵션만)
 const connectionCapabilities = {
     'IMS': '01',
     'MMS': '02', 
     'SUPL': '04',
-    'Internet': '08',
-    'LCS user plane positioning (LPP)': '10'
+    'Internet': '08'
 };
 
 // Connection Capabilities 드롭다운 HTML 생성 함수
