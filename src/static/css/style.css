@@ -995,3 +995,40 @@ footer {
     flex-direction: column;
     gap: 8px;
 }
+/* Connection Capabilities 체크박스 스타일 */
+.connection-capabilities-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #f9fafb;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.capability-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 12px;
+}
+
+.capability-checkbox:hover {
+    background-color: #e5e7eb;
+}
+
+.capability-checkbox input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.capability-checkbox span {
+    user-select: none;
+    line-height: 1.2;
+}
